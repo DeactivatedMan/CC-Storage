@@ -48,7 +48,7 @@ local function splitItemString(input)
 end
 
 
-write("\nSelf attempt: "..table.concat(splitItemString("minecraft:chest 1")", ").."\n\n")
+--write("\nSelf attempt: "..table.concat(splitItemString("minecraft:chest 1")", ").."\n\n")
 
 while true do
     write("Request Format:\n  itemmod:item integer\n  ")
@@ -56,13 +56,15 @@ while true do
     write("Message inputted: "..req.."\n")
     local itemid, amount = splitItemString(req)
 
-
+    sleep(1)
     if not string.find(itemid, ":") then
         write("Could not find required : in itemid, did you spell it wrong?\n")
     elseif amount:find("%D") then
         write("Amount entered contains non-integer characters, did you spell it wrong?\n")
     else
         write("Search and output started for "..amount.." "..itemid.."(s)\n")
+        sleep(1)
         searchAndOutput(itemid,amount)
     end
+    sleep(1)
 end
