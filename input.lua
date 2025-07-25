@@ -56,7 +56,8 @@ end
 
 while true do
 
-    local items = peripheral.wrap("right").list()
+    local items = peripheral.wrap("minecraft:chest_12").list()
+    write("items is of type "..type(items).." and contains "..items.."\n")
 
     if items ~= {} then
         for slot,item in pairs(items) do
