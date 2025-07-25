@@ -38,19 +38,23 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
     end
 end
 
+local function splitItemString(input)
+    local first, second = input:match("^(%S+)%s+(%S+)$")
+    if first and second then
+        return { first, second }
+    else
+        return { input, "16" }
+    end
+end
 
-write("\nSelf attempt: "..table.concat(tostring("minecraft:chest 1"):match("^(%S+)%s+(%S+)$"), "\n").."\n\n")
+
+write("\nSelf attempt: "..table.concat(splitItemString("minecraft:chest 1")", ").."\n\n")
 
 while true do
     write("Request Format:\n  itemmod:item integer\n  ")
     local req = read()
     write("Message inputted: "..req.."\n")
-    local itemid, amount = req:match("^(%S+)%s+(%S+)$") -- Splits item into itemid and amount
-
-    if amount == nil or amount == "" then
-        amount = "16"
-        write("Amount value not inputted, defaulting to 16\n")
-    end
+    local itemid, amount = splitItemString(req)
 
 
     if not string.find(itemid, ":") then
