@@ -1,5 +1,5 @@
 local mainChest = "right"
-local inputChest peripheral.wrap(mainChest)
+local inputChest = peripheral.wrap(mainChest)
 
 local function iterate(itemid, originSlot, amount, filter)
     local names = peripheral.getNames()
@@ -54,7 +54,7 @@ while true do
 
     local items = inputChest.list()
 
-    if items.next() then
+    if items ~= {} then
         for slot,item in pairs(items) do
             --searchAndInput(item.name, slot, item.count)
 
