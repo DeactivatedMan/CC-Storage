@@ -47,7 +47,7 @@ while true do
     write("Request Format:\n  itemmod:item integer\n  ")
     local req = read()
     write("Message inputted: "..req.."\n")
-    local itemid, amount = splitItemString(req); amount = tonumber(amount)
+    local itemid, amount = splitItemString(req)
 
     sleep(1)
     if not string.find(itemid, ":") then
@@ -57,11 +57,11 @@ while true do
     else
         write("Search and output started for "..amount.." "..itemid.."(s)\n")
         sleep(1)
-        local amountLeft = searchAndOutput(itemid,amount)
+        local amountLeft = searchAndOutput(itemid,tonumber(amount))
 
         if amountLeft == 0 then
             write("Transferred all items!\n")
-        elseif amountLeft < amount then
+        elseif amountLeft < tonumber(amount) then
             write("Could not transfer all items.\n")
         else
             write("Out of stock!\n")
