@@ -5,17 +5,22 @@ local function iterate(itemid, originSlot, amount, filter)
     local names = peripheral.getNames()
     local amountLeft = amount
 
+    write("loop start\n")
     for _,name in pairs(names) do -- Iterates through
+        write("looped\n")
     
         if amountLeft <= 0 then
             break
         end
 
         if string.find(name, ":") and amountLeft > 0 then -- Removes any directional peripherals
+            write("Looking in "..name.."\n")
             local store = peripheral.wrap(name) -- References the storage object itself
             
             if filter then
                 for slot,item in pairs(store.list()) do
+                    write("looped B\n")
+                    write(item.name.."at slot"..slot.."\n")
                     if item.name == itemid then
                         store.pullItems(mainChest, originSlot, amountLeft, slot)
                         write("Transferred "..math.min(item.maxCount-item.count, amountLeft).." items..\n")
@@ -29,6 +34,7 @@ local function iterate(itemid, originSlot, amount, filter)
                 end
             elseif #store.list() < store.size then
                 for slot=1,store.size() do
+                    write("looped C\ngetItemDetail = "..store.getItemDetail(slot).."\n")
                     if not store.getItemDetail(slot) then
                         store.pullItems(mainChest, originSlot, amountLeft, slot)
                         write("Transferred "..math.max(amountLeft,64).." items..\n")
