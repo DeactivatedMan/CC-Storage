@@ -38,6 +38,9 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
     end
 end
 
+
+write("\nSelf attempt: "..tostring("minecraft:chest 1"):match("(%a+)%s*(%a*)").."\n\n")
+
 while true do
     write("Request Format:\n  itemmod:item integer\n  ")
     local req = read()
