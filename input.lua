@@ -1,4 +1,4 @@
-local mainChest = "right"
+local mainChest = "minecraft:chest_12"
 local inputChest = peripheral.find(mainChest)
 
 local function iterate(itemid, originSlot, amount, filter)
@@ -19,7 +19,7 @@ local function iterate(itemid, originSlot, amount, filter)
             write("Looking in "..name.."\n")
             local store = peripheral.wrap(name) -- References the storage object itself
             
-            if filter then
+            if filter then -- Checks specifically for slots with the same itemid
                 for slot,item in pairs(store.list()) do
                     write("looped B\n")
                     write(item.name.."at slot"..slot.."\n")
@@ -34,7 +34,7 @@ local function iterate(itemid, originSlot, amount, filter)
 
                     end
                 end
-            elseif #store.list() < store.size() then
+            elseif #store.list() < store.size() then -- Checks specifically all blank slots
                 for slot=1,store.size() do
                     if not store.getItemDetail(slot) then
                         store.pullItems(mainChest, originSlot, amountLeft, slot)

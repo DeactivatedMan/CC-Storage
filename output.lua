@@ -1,4 +1,4 @@
-local mainChest = "left"
+local mainChest = "minecraft:chest_14"
 
 local function searchAndOutput(itemid, amount) -- Used to check for items and output them
     local names = peripheral.getNames()
