@@ -1,5 +1,5 @@
 local mainChest = "right"
-local inputChest = peripheral.wrap(mainChest)
+local inputChest = peripheral.find(mainChest)
 
 local function iterate(itemid, originSlot, amount, filter)
     local names = peripheral.getNames()
