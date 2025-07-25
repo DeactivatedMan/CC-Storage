@@ -25,8 +25,8 @@ local function iterate(itemid, originSlot, amount, filter)
                     write(item.name.." at slot "..slot.." All data:\n  "..textutils.serialize(item))
                     if item.name == itemid then
                         store.pullItems(mainChest, originSlot, amountLeft, slot)
-                        write("Transferred "..math.min(item.maxCount-item.count, amountLeft).." items..\n")
-                        amountLeft = peripheral.wrap("minecraft:chest_15").getItemDetail(originSlot).count--math.max(0, amountLeft - (item.maxCount-item.count) )
+                        --write("Transferred "..math.min(item.maxCount-item.count, amountLeft).." items..\n")
+                        amountLeft = peripheral.wrap("minecraft:chest_15").getItemDetail(originSlot).count or 0--math.max(0, amountLeft - (item.maxCount-item.count) )
 
                         if amountLeft <= 0 then
                             break
@@ -39,7 +39,7 @@ local function iterate(itemid, originSlot, amount, filter)
                     if not store.getItemDetail(slot) then
                         store.pullItems(mainChest, originSlot, amountLeft, slot)
                         write("Transferred "..math.max(amountLeft,64).." items..\n")
-                        amountLeft = peripheral.wrap("minecraft:chest_15").getItemDetail(originSlot).count--math.max(0, amountLeft-64)
+                        amountLeft = peripheral.wrap("minecraft:chest_15").getItemDetail(originSlot).count or 0--math.max(0, amountLeft-64)
 
                         if amountLeft <= 0 then
                             break
