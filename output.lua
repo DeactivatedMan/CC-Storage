@@ -19,7 +19,7 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
                     store.pushItems(mainChest, slot, amountLeft)
                     amountLeft = math.max(0, amountLeft - slot.count)
                     write("Transferred "..math.min(amountLeft, slot.count).." items..\n")
-
+                    
                     if amountLeft <= 0 then
                         break
                     end
