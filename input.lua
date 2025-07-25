@@ -22,9 +22,9 @@ local function iterate(itemid, originSlot, amount, filter)
             if filter then -- Checks specifically for slots with the same itemid
                 for slot,item in pairs(store.list()) do
                     --write("looped B\n")
-                    item = store.getItemDetail(slot) -- I hate this but it has to be here
                     --write(item.name.." at slot "..slot.." All data:\n  "..textutils.serialize(item))
                     if item.name == itemid and item.count < item.maxCount then
+                        item = store.getItemDetail(slot) -- I hate this but it has to be here
                         store.pullItems(mainChest, originSlot, math.min( item.maxCount-item.count ,amountLeft ), slot)
 
                         local originItem = peripheral.wrap("minecraft:chest_15").getItemDetail(originSlot)

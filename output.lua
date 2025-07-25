@@ -2,9 +2,9 @@ local mainChest = "minecraft:chest_14"
 
 local function searchAndOutput(itemid, amount) -- Used to check for items and output them
     local names = peripheral.getNames()
-    local amountLeft = string.tointeger(amount)
+    local amountLeft = tonumber(amount)
 
-    for name in names do -- Iterates through
+    for _,name in pairs(names) do -- Iterates through
     
         if amountLeft <= 0 then
             break
@@ -15,6 +15,7 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
             
             for slot,item in pairs(store.list()) do
                 if item.name == itemid then
+                    item = store.getItemDetail(slot) -- I hate this but it has to be here
                     store.pushItems(mainChest, slot, amountLeft)
                     amountLeft = math.max(0, amountLeft - slot.count)
                     write("Transferred "..math.min(amountLeft, slot.count).." items..\n")
@@ -41,9 +42,9 @@ end
 local function splitItemString(input)
     local first, second = input:match("^(%S+)%s+(%S+)$")
     if first and second then
-        return { first, second }
+        return first, second
     else
-        return { input, "16" }
+        return input, "16"
     end
 end
 
