@@ -10,7 +10,7 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
             return amountLeft
         end
 
-        if string.find(name, ":") and amountLeft > 0 then -- Removes any directional peripherals
+        if string.find(name, ":") and amountLeft > 0 and name ~= mainChest then -- Removes any directional peripherals
             local store = peripheral.wrap(name) -- References the storage object itself
             
             for slot,item in pairs(store.list()) do

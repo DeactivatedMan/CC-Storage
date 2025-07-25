@@ -15,7 +15,7 @@ local function iterate(itemid, originSlot, amount, filter)
             break
         end
 
-        if string.find(name, ":") and amountLeft > 0 then -- Removes any directional peripherals
+        if string.find(name, ":") and amountLeft > 0 and name ~= "minecraft:chest_14" then -- Removes any directional peripherals
             --write("Looking in "..name.."\n")
             local store = peripheral.wrap(name) -- References the storage object itself
             
