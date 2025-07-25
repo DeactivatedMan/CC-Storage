@@ -36,7 +36,6 @@ local function iterate(itemid, originSlot, amount, filter)
                 end
             elseif #store.list() < store.size() then
                 for slot=1,store.size() do
-                    write("looped C\ngetItemDetail = "..store.getItemDetail(slot).."\n")
                     if not store.getItemDetail(slot) then
                         store.pullItems(mainChest, originSlot, amountLeft, slot)
                         write("Transferred "..math.max(amountLeft,64).." items..\n")
