@@ -2,7 +2,7 @@ local mainChest = "left"
 
 local function searchAndOutput(itemid, amount) -- Used to check for items and output them
     local names = peripheral.getNames()
-    local amountLeft = amount
+    local amountLeft = string.tointeger(amount)
 
     for name in names do -- Iterates through
     
@@ -40,8 +40,21 @@ end
 
 while true do
     write("Request Format:\n  itemmod:item integer\n  ")
-    local itemid, amount = string.gmatch( read(), "%a+" ) -- Splits item into itemid and amount
-    print("Obtaining",itemid)
+    local req = read()
+    local itemid, amount = req:match("(%a+)%s*(%a*)") -- Splits item into itemid and amount
 
-    searchAndOutput(itemid,amount)
+    if amount == nil or amount == "" then
+        amount = "16"
+        write("Amount value not inputted, defaulting to 16")
+    end
+
+
+    if not string.find(itemid, ":") then
+        write("Could not find required : in itemid, did you spell it wrong?")
+    elseif amount:find("%D") then
+        write("Amount entered contains non-integer characters, did you spell it wrong?")
+    else
+        write("Search and output started for "..amount.." "..itemid.."")
+        searchAndOutput(itemid,amount)
+    end
 end
