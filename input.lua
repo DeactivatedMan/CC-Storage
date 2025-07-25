@@ -93,7 +93,7 @@ while true do
                 break
             end
         end
+    else
+        sleep(3)
     end
-
-    sleep(3)
 end
