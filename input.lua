@@ -4,7 +4,7 @@ local inputChest = peripheral.find(mainChest)
 local function iterate(itemid, originSlot, amount, filter)
     write("function called\n")
     local names = peripheral.getNames()
-    write("names obtained, ".. table.concat(names,"\n") )
+    write("names obtained:\n  ".. table.concat(names,"\n  ") )
     local amountLeft = amount
 
     write("loop start\n")
@@ -22,7 +22,7 @@ local function iterate(itemid, originSlot, amount, filter)
             if filter then -- Checks specifically for slots with the same itemid
                 for slot,item in pairs(store.list()) do
                     write("looped B\n")
-                    write(item.name.."at slot"..slot.."\n")
+                    write(item.name.." at slot "..slot.." All data:\n  "..textutils.serialize(item))
                     if item.name == itemid then
                         store.pullItems(mainChest, originSlot, amountLeft, slot)
                         write("Transferred "..math.min(item.maxCount-item.count, amountLeft).." items..\n")
