@@ -1,4 +1,4 @@
-local mainChest = "minecraft:chest_18"
+local mainChest = "minecraft:barrel_0"
 local inputChest = peripheral.find(mainChest)
 
 local function iterate(itemid, originSlot, amount, filter)
@@ -15,7 +15,7 @@ local function iterate(itemid, originSlot, amount, filter)
             break
         end
 
-        if string.find(name, ":") and amountLeft > 0 and name ~= "minecraft:chest_19" then -- Removes any directional peripherals
+        if string.find(name, ":") and amountLeft > 0 and name ~= "minecraft:barrel_1" then -- Removes any directional peripherals
             --write("Looking in "..name.."\n")
             local store = peripheral.wrap(name) -- References the storage object itself
             
@@ -27,7 +27,7 @@ local function iterate(itemid, originSlot, amount, filter)
                     if item.name == itemid and item.count < item.maxCount then
                         store.pullItems(mainChest, originSlot, math.min( item.maxCount-item.count ,amountLeft ), slot)
 
-                        local originItem = peripheral.wrap("minecraft:chest_18").getItemDetail(originSlot)
+                        local originItem = peripheral.wrap("minecraft:barrel_0").getItemDetail(originSlot)
                         amountLeft = 0
                         if originItem then amountLeft = originItem.count end
 
@@ -43,7 +43,7 @@ local function iterate(itemid, originSlot, amount, filter)
                         store.pullItems(mainChest, originSlot, amountLeft, slot)
                         --write("Transferred "..math.max(amountLeft,64).." items..\n")
 
-                        local originItem = peripheral.wrap("minecraft:chest_18").getItemDetail(originSlot)
+                        local originItem = peripheral.wrap("minecraft:barrel_0").getItemDetail(originSlot)
                         amountLeft = 0
                         if originItem then amountLeft = originItem.count end
 
@@ -62,13 +62,13 @@ end
 
 while true do
 
-    local items = peripheral.wrap("minecraft:chest_18").list()
+    local items = peripheral.wrap("minecraft:barrel_0").list()
     --write("items is of type "..type(items).."\n")
 
     if textutils.serialize(items) ~= "{}" then
         --write("items is not blank\n")
         for slot,item in pairs(items) do
-            item = peripheral.wrap("minecraft:chest_18").getItemDetail(slot)
+            item = peripheral.wrap("minecraft:barrel_0").getItemDetail(slot)
             --write("loop\n")
             --searchAndInput(item.name, slot, item.count)
 
@@ -84,12 +84,12 @@ while true do
 
             --write("amountLeft is of type "..type(amountLeft).." and contains "..amountLeft.."\n")
             if amountLeft == 0 then
-                write("\nTransferred all items!\n")
+                write("Transferred all items!\n")
             elseif amountLeft < item.count then
-                write("\nCould not transfer all items.\n")
+                write("Could not transfer all items.\n")
                 break
             else
-                write("\nOut of storage!\n")
+                write("Out of storage!\n")
                 break
             end
         end

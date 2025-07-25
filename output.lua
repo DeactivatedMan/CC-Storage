@@ -1,4 +1,4 @@
-local mainChest = "minecraft:chest_19"
+local mainChest = "minecraft:barrel_1"
 
 local function searchAndOutput(itemid, amount) -- Used to check for items and output them
     local names = peripheral.getNames()
@@ -14,8 +14,8 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
             local store = peripheral.wrap(name) -- References the storage object itself
             
             for slot,item in pairs(store.list()) do
-                if item.name == itemid then
-                    item = store.getItemDetail(slot) -- I hate this but it has to be here
+                item = store.getItemDetail(slot) -- I hate this but it has to be here
+                if item.name:find(itemid) or item.displayName:find(itemid) then
                     store.pushItems(mainChest, slot, amountLeft)
                     amountLeft = math.max(0, amountLeft - item.count)
                     --write("Transferred "..math.min(amountLeft, item.count).." items..\n")
@@ -34,11 +34,13 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
 end
 
 local function splitItemString(input)
-    local first, second = input:match("^(%S+)%s+(%S+)$")
-    if first and second then
-        return first, second
+    local lastSpace = input:find(" [^ ]*$")
+
+    if lastSpace then
+        local first = input:sub(1, lastSpace -1)
+        local second = input:sub(lastSpace +1)
     else
-        return input, "16"
+        return input, "1"
     end
 end
 
@@ -49,15 +51,16 @@ while true do
     write("\nRequest Format:\n  itemmod:item integer\n  ")
     local req = read()
     write("Message inputted: "..req.."\n")
-    local itemid, amount = splitItemString(req)
+    local itemid, amount = splitItemString( string.lower(req) )
 
     sleep(1)
-    if not string.find(itemid, ":") then
-        write("Could not find required : in itemid, did you spell it wrong?\n")
-    elseif amount:find("%D") then
+    --if not string.find(itemid, ":") then
+    --    write("Could not find required : in itemid, did you spell it wrong?\n")
+    --elseif amount:find("%D") then
+    if amount:find("%D") then
         write("Amount entered contains non-integer characters, did you spell it wrong?\n")
     else
-        write("Search and output started for "..amount.." "..itemid.."(s)\n")
+        write("Looking for: "..amount.."x "..itemid.."\n")
         sleep(1)
         local amountLeft = searchAndOutput(itemid,tonumber(amount))
 
