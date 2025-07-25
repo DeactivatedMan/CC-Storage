@@ -48,9 +48,9 @@ local function iterate(itemid, originSlot, amount, filter)
 end
 
 while true do
-    --write("Request Format:\n  itemmod:item integer\n  ")
-    --local itemid, amount = string.gmatch( read(), "%a+" ) -- Splits item into itemid and amount
-    --print("Obtaining",itemid)
+    write("Request Format:\n  itemmod:item integer\n  ")
+    local itemid, amount = string.gmatch( read(), "%a+" ) -- Splits item into itemid and amount
+    print("Obtaining",itemid)
 
     local items = peripheral.wrap("right").list()
 
