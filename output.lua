@@ -39,6 +39,8 @@ local function splitItemString(input)
     if lastSpace then
         local first = input:sub(1, lastSpace -1)
         local second = input:sub(lastSpace +1)
+
+        return first, second
     else
         return input, "1"
     end
