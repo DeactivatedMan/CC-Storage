@@ -18,7 +18,7 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
                     item = store.getItemDetail(slot) -- I hate this but it has to be here
                     store.pushItems(mainChest, slot, amountLeft)
                     amountLeft = math.max(0, amountLeft - item.count)
-                    write("Transferred "..math.min(amountLeft, item.count).." items..\n")
+                    --write("Transferred "..math.min(amountLeft, item.count).." items..\n")
                     
                     if amountLeft <= 0 then
                         return amountLeft
@@ -46,7 +46,7 @@ end
 --write("\nSelf attempt: "..table.concat(splitItemString("minecraft:chest 1")", ").."\n\n")
 
 while true do
-    write("Request Format:\n  itemmod:item integer\n  ")
+    write("\nRequest Format:\n  itemmod:item integer\n  ")
     local req = read()
     write("Message inputted: "..req.."\n")
     local itemid, amount = splitItemString(req)
@@ -62,11 +62,11 @@ while true do
         local amountLeft = searchAndOutput(itemid,tonumber(amount))
 
         if amountLeft == 0 then
-            write("Transferred all items!\n")
+            write("\nTransferred all items!\n")
         elseif amountLeft < tonumber(amount) then
-            write("Could not transfer all items.\n")
+            write("\nCould not transfer all items.\n")
         else
-            write("Out of stock!\n")
+            write("\nOut of stock!\n")
         end
     end
     sleep(1)

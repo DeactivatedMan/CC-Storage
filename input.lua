@@ -65,7 +65,7 @@ while true do
     local items = peripheral.wrap("minecraft:chest_15").list()
     --write("items is of type "..type(items).."\n")
 
-    if items ~= {} then
+    if textutils.serialize(items) ~= "{}" then
         --write("items is not blank\n")
         for slot,item in pairs(items) do
             --write("loop\n")
@@ -81,12 +81,12 @@ while true do
 
             --write("amountLeft is of type "..type(amountLeft).." and contains "..amountLeft.."\n")
             if amountLeft == 0 then
-                write("Transferred all items!\n")
+                write("\nTransferred all items!\n")
             elseif amountLeft < item.count then
-                write("Could not transfer all items.\n")
+                write("\nCould not transfer all items.\n")
                 break
             else
-                write("Out of storage!\n")
+                write("\nOut of storage!\n")
                 break
             end
         end
