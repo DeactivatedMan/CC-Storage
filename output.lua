@@ -39,13 +39,13 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
 end
 
 
-write("\nSelf attempt: "..tostring("minecraft:chest 1"):match("(%a+)%s*(%a*)").."\n\n")
+write("\nSelf attempt: "..table.concat(tostring("minecraft:chest 1"):match("^(%S+)%s+(%S+)$"), "\n").."\n\n")
 
 while true do
     write("Request Format:\n  itemmod:item integer\n  ")
     local req = read()
     write("Message inputted: "..req.."\n")
-    local itemid, amount = req:match("(%a+)%s*(%a*)") -- Splits item into itemid and amount
+    local itemid, amount = req:match("^(%S+)%s+(%S+)$") -- Splits item into itemid and amount
 
     if amount == nil or amount == "" then
         amount = "16"
