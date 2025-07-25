@@ -68,12 +68,15 @@ while true do
     if textutils.serialize(items) ~= "{}" then
         --write("items is not blank\n")
         for slot,item in pairs(items) do
+            item = peripheral.wrap("minecraft:chest_18").getItemDetail(originSlot)
             --write("loop\n")
             --searchAndInput(item.name, slot, item.count)
 
             local amountLeft = item.count
             --write("amountLeft = "..amountLeft.."\n")
-            amountLeft = iterate(item.name, slot, amountLeft, true)
+            if item.count < item.maxCount then
+                amountLeft = iterate(item.name, slot, amountLeft, true)
+            end
 
             if amountLeft > 0 then
                 amountLeft = iterate(item.name, slot, amountLeft, false)
