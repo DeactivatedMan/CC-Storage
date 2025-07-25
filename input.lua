@@ -34,7 +34,7 @@ local function iterate(itemid, originSlot, amount, filter)
 
                     end
                 end
-            elseif #store.list() < store.size then
+            elseif #store.list() < store.size() then
                 for slot=1,store.size() do
                     write("looped C\ngetItemDetail = "..store.getItemDetail(slot).."\n")
                     if not store.getItemDetail(slot) then
