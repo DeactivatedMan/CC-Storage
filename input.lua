@@ -1,4 +1,4 @@
-local mainChest = "minecraft:chest_12"
+local mainChest = "minecraft:chest_15"
 local inputChest = peripheral.find(mainChest)
 
 local function iterate(itemid, originSlot, amount, filter)
@@ -56,14 +56,17 @@ end
 
 while true do
 
-    local items = peripheral.wrap("minecraft:chest_12").list()
-    write("items is of type "..type(items).." and contains "..items.."\n")
+    local items = peripheral.wrap("minecraft:chest_15").list()
+    write("items is of type "..type(items).."\n")
 
     if items ~= {} then
+        write("items is not blank\n")
         for slot,item in pairs(items) do
+            write("loop\n")
             --searchAndInput(item.name, slot, item.count)
 
             local amountLeft = item.count
+            write("amountLeft = "..amountLeft.."\n")
             amountLeft = iterate(item.name, slot, amountLeft, true)
 
             if amountLeft > 0 then
