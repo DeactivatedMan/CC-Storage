@@ -17,8 +17,8 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
                 if item.name == itemid then
                     item = store.getItemDetail(slot) -- I hate this but it has to be here
                     store.pushItems(mainChest, slot, amountLeft)
-                    amountLeft = math.max(0, amountLeft - slot.count)
-                    write("Transferred "..math.min(amountLeft, slot.count).." items..\n")
+                    amountLeft = math.max(0, amountLeft - item.count)
+                    write("Transferred "..math.min(amountLeft, item.count).." items..\n")
                     
                     if amountLeft <= 0 then
                         break
