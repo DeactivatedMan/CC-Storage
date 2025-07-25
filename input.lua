@@ -56,10 +56,10 @@ while true do
             --searchAndInput(item.name, slot, item.count)
 
             local amountLeft = item.count
-            amountLeft = iterate(itemid, originSlot, amountLeft, false)
+            amountLeft = iterate(itemid, originSlot, amountLeft, true)
 
             if amountLeft > 0 then
-                amountLeft = iterate(itemid, originSlot, amountLeft, true)
+                amountLeft = iterate(itemid, originSlot, amountLeft, false)
             end
 
             if amountLeft == 0 then
