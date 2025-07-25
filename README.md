@@ -1,1 +1,5 @@
-Just install the startup.lua script and it will automatically install the others
+Just run:
+
+wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/main/startup.lua
+
+Then reboot!
