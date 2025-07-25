@@ -52,7 +52,7 @@ while true do
     --local itemid, amount = string.gmatch( read(), "%a+" ) -- Splits item into itemid and amount
     --print("Obtaining",itemid)
 
-    local items = inputChest.list()
+    local items = peripheral.wrap("right").list()
 
     if items ~= {} then
         for slot,item in pairs(items) do
