@@ -41,6 +41,7 @@ end
 while true do
     write("Request Format:\n  itemmod:item integer\n  ")
     local req = read()
+    write("Message inputted: "..req.."\n")
     local itemid, amount = req:match("(%a+)%s*(%a*)") -- Splits item into itemid and amount
 
     if amount == nil or amount == "" then
