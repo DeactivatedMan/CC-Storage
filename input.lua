@@ -56,12 +56,13 @@ while true do
             --searchAndInput(item.name, slot, item.count)
 
             local amountLeft = item.count
-            amountLeft = iterate(itemid, originSlot, amountLeft, true)
+            amountLeft = iterate(item.name, slot, amountLeft, true)
 
             if amountLeft > 0 then
-                amountLeft = iterate(itemid, originSlot, amountLeft, false)
+                amountLeft = iterate(item.name, slot, amountLeft, false)
             end
 
+            write("amountLeft is of type "..type(amountLeft).." and contains "..amountLeft.."\n")
             if amountLeft == 0 then
                 write("Transferred all items!\n")
             elseif amountLeft < item.count then
