@@ -27,7 +27,7 @@ local function iterate(itemid, originSlot, amount, filter)
 
                     end
                 end
-            else
+            elseif #store.list() < store.size then
                 for slot=1,store.size() do
                     if not store.getItemDetail(slot) then
                         store.pullItems(mainChest, originSlot, amountLeft, slot)
@@ -56,9 +56,9 @@ while true do
 
     if items.next() then
         for slot,item in pairs(items) do
-            searchAndInput(item.name, slot, item.count)
+            --searchAndInput(item.name, slot, item.count)
 
-            local amountLeft = amount
+            local amountLeft = item.count
             amountLeft = iterate(itemid, originSlot, amountLeft, false)
 
             if amountLeft > 0 then
@@ -67,7 +67,7 @@ while true do
 
             if amountLeft == 0 then
                 write("Transferred all items!")
-            elseif amountLeft < amount then
+            elseif amountLeft < item.count then
                 write("Could not transfer all items.")
                 break
             else
