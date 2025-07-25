@@ -1,4 +1,4 @@
-local mainChest = "minecraft:chest_19"
+local mainChest = "minecraft:chest_18"
 local inputChest = peripheral.find(mainChest)
 
 local function iterate(itemid, originSlot, amount, filter)
@@ -15,7 +15,7 @@ local function iterate(itemid, originSlot, amount, filter)
             break
         end
 
-        if string.find(name, ":") and amountLeft > 0 and name ~= "minecraft:chest_18" then -- Removes any directional peripherals
+        if string.find(name, ":") and amountLeft > 0 and name ~= "minecraft:chest_19" then -- Removes any directional peripherals
             --write("Looking in "..name.."\n")
             local store = peripheral.wrap(name) -- References the storage object itself
             
@@ -27,7 +27,7 @@ local function iterate(itemid, originSlot, amount, filter)
                     if item.name == itemid and item.count < item.maxCount then
                         store.pullItems(mainChest, originSlot, math.min( item.maxCount-item.count ,amountLeft ), slot)
 
-                        local originItem = peripheral.wrap("minecraft:chest_19").getItemDetail(originSlot)
+                        local originItem = peripheral.wrap("minecraft:chest_18").getItemDetail(originSlot)
                         amountLeft = 0
                         if originItem then amountLeft = originItem.count end
 
@@ -43,7 +43,7 @@ local function iterate(itemid, originSlot, amount, filter)
                         store.pullItems(mainChest, originSlot, amountLeft, slot)
                         --write("Transferred "..math.max(amountLeft,64).." items..\n")
 
-                        local originItem = peripheral.wrap("minecraft:chest_19").getItemDetail(originSlot)
+                        local originItem = peripheral.wrap("minecraft:chest_18").getItemDetail(originSlot)
                         amountLeft = 0
                         if originItem then amountLeft = originItem.count end
 
@@ -62,7 +62,7 @@ end
 
 while true do
 
-    local items = peripheral.wrap("minecraft:chest_19").list()
+    local items = peripheral.wrap("minecraft:chest_18").list()
     --write("items is of type "..type(items).."\n")
 
     if textutils.serialize(items) ~= "{}" then
