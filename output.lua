@@ -7,7 +7,7 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
     for _,name in pairs(names) do -- Iterates through
     
         if amountLeft <= 0 then
-            break
+            return amountLeft
         end
 
         if string.find(name, ":") and amountLeft > 0 then -- Removes any directional peripherals
@@ -21,7 +21,7 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
                     write("Transferred "..math.min(amountLeft, item.count).." items..\n")
                     
                     if amountLeft <= 0 then
-                        break
+                        return amountLeft
                     end
 
                 end
@@ -29,6 +29,8 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
 
         end
     end
+
+    return amountLeft
 end
 
 local function splitItemString(input)
