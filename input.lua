@@ -5,7 +5,7 @@ local function iterate(itemid, originSlot, amount, filter)
     local names = peripheral.getNames()
     local amountLeft = amount
 
-    for name in names do -- Iterates through
+    for _,name in pairs(names) do -- Iterates through
     
         if amountLeft <= 0 then
             break
