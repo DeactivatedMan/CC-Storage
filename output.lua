@@ -17,7 +17,7 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
                 if item.name == itemid then
                     store.pushItems(mainChest, slot, amountLeft)
                     amountLeft = math.max(0, amountLeft - slot.count)
-                    write("Transferred "..math.min(amountLeft, slot.count).." items..")
+                    write("Transferred "..math.min(amountLeft, slot.count).." items..\n")
 
                     if amountLeft <= 0 then
                         break
@@ -30,11 +30,11 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
     end
 
     if amountLeft == 0 then
-        write("Transferred all items!")
+        write("Transferred all items!\n")
     elseif amountLeft < amount then
-        write("Could not transfer all items.")
+        write("Could not transfer all items.\n")
     else
-        write("Out of stock!")
+        write("Out of stock!\n")
     end
 end
 
@@ -45,16 +45,16 @@ while true do
 
     if amount == nil or amount == "" then
         amount = "16"
-        write("Amount value not inputted, defaulting to 16")
+        write("Amount value not inputted, defaulting to 16\n")
     end
 
 
     if not string.find(itemid, ":") then
-        write("Could not find required : in itemid, did you spell it wrong?")
+        write("Could not find required : in itemid, did you spell it wrong?\n")
     elseif amount:find("%D") then
-        write("Amount entered contains non-integer characters, did you spell it wrong?")
+        write("Amount entered contains non-integer characters, did you spell it wrong?\n")
     else
-        write("Search and output started for "..amount.." "..itemid.."")
+        write("Search and output started for "..amount.." "..itemid.."(s)\n")
         searchAndOutput(itemid,amount)
     end
 end

@@ -18,7 +18,7 @@ local function iterate(itemid, originSlot, amount, filter)
                 for slot,item in pairs(store.list()) do
                     if item.name == itemid then
                         store.pullItems(mainChest, originSlot, amountLeft, slot)
-                        write("Transferred "..math.min(item.maxCount-item.count, amountLeft).." items..")
+                        write("Transferred "..math.min(item.maxCount-item.count, amountLeft).." items..\n")
                         amountLeft = math.max(0, amountLeft - (item.maxCount-item.count) )
 
                         if amountLeft <= 0 then
@@ -31,7 +31,7 @@ local function iterate(itemid, originSlot, amount, filter)
                 for slot=1,store.size() do
                     if not store.getItemDetail(slot) then
                         store.pullItems(mainChest, originSlot, amountLeft, slot)
-                        write("Transferred "..math.max(amountLeft,64).." items..")
+                        write("Transferred "..math.max(amountLeft,64).." items..\n")
                         amountLeft = math.max(0, amountLeft-64)
 
                         if amountLeft <= 0 then
@@ -48,9 +48,9 @@ local function iterate(itemid, originSlot, amount, filter)
 end
 
 while true do
-    write("Request Format:\n  itemmod:item integer\n  ")
-    local itemid, amount = string.gmatch( read(), "%a+" ) -- Splits item into itemid and amount
-    print("Obtaining",itemid)
+    --write("Request Format:\n  itemmod:item integer\n  ")
+    --local itemid, amount = string.gmatch( read(), "%a+" ) -- Splits item into itemid and amount
+    --print("Obtaining",itemid)
 
     local items = peripheral.wrap("right").list()
 
@@ -66,14 +66,16 @@ while true do
             end
 
             if amountLeft == 0 then
-                write("Transferred all items!")
+                write("Transferred all items!\n")
             elseif amountLeft < item.count then
-                write("Could not transfer all items.")
+                write("Could not transfer all items.\n")
                 break
             else
-                write("Out of storage!")
+                write("Out of storage!\n")
                 break
             end
         end
     end
+
+    sleep(3)
 end
