@@ -50,7 +50,7 @@ end
 --write("\nSelf attempt: "..table.concat(splitItemString("minecraft:chest 1")", ").."\n\n")
 
 while true do
-    write("\nRequest Formats:\n A]     itemmod:item integer\n A]     itemname integer\n\n > ")
+    write("\nRequest Formats:\n A]     itemmod:item integer\n B]     itemname integer\n\n > ")
     local req = read()
     write("Message inputted: "..req.."\n")
     local itemid, amount = splitItemString( string.lower(req) )
