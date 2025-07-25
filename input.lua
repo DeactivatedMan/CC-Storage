@@ -68,7 +68,7 @@ while true do
     if textutils.serialize(items) ~= "{}" then
         --write("items is not blank\n")
         for slot,item in pairs(items) do
-            item = peripheral.wrap("minecraft:chest_18").getItemDetail(originSlot)
+            item = peripheral.wrap("minecraft:chest_18").getItemDetail(slot)
             --write("loop\n")
             --searchAndInput(item.name, slot, item.count)
 
