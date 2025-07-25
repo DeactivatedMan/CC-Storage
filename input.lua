@@ -2,7 +2,9 @@ local mainChest = "right"
 local inputChest = peripheral.find(mainChest)
 
 local function iterate(itemid, originSlot, amount, filter)
+    write("function called\n")
     local names = peripheral.getNames()
+    write("names obtained, ".. table.concat(names,"\n") )
     local amountLeft = amount
 
     write("loop start\n")
