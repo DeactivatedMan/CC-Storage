@@ -11,9 +11,13 @@ if fs.exists("outputB.lua") then
     shell.run("rename outputB.lua output.lua")
 end
 
-multishell.launch({}, "input.lua")
-multishell.launch({}, "output.lua")
+if fs.exists("input.lua") then
+    multishell.launch({}, "input.lua")
+end
 
+if fs.exists("output.lua") then
+    multishell.launch({}, "output.lua")
+end
 
 write("Attempt update? Y // N\n > ")
 local yn = string.lower(read())
@@ -21,5 +25,5 @@ local yn = string.lower(read())
 if string.find(yn, "y") then
     shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/main/input.lua inputB.lua")  -- Downloads input script
     shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/main/output.lua outputB.lua") -- Downloads output script
-    write("Updated! (Or did absolutely nothing other than reset the files..)")
+    write("Updated! (Or did absolutely nothing other than reset the files..)\nrun 'reboot' to initialise\n")
 end
