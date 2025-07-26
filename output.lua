@@ -80,7 +80,7 @@ while true do
     local req = read()
     local itemid, amount, isEnchant = splitItemString( string.lower(req) )
 
-    write("You are requesting:")
+    write("\nYou are requesting:")
     write("\n Name:       "..itemid)
     write("\n Amount:     "..amount)
     write("\n Is Enchant: "..(isEnchant and "yes" or "no"))
@@ -89,9 +89,9 @@ while true do
 
     if yn:find("y") then
         if amount:find("%D") then
-            write("Amount entered contains non-integer characters, did you spell it wrong?\n")
+            write("\nAmount entered contains non-integer characters, did you spell it wrong?\n")
         else
-            write("Looking for: "..amount.."x "..itemid.."\n")
+            write("\nLooking for your item...")
             local amountLeft = searchAndOutput(itemid,tonumber(amount), isEnchant)
 
             if amountLeft == 0 then
