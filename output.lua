@@ -76,14 +76,17 @@ end
 --write("\nSelf attempt: "..table.concat(splitItemString("minecraft:chest 1")", ").."\n\n")
 
 while true do
-    write("\nRequest Formats:\n A]     itemmod:item integer\n B]     itemname integer\n C]     e enchantname integer\n\n > ")
+    write("\nRequest Formats:")
+    write("\n A]     itemmod:item  integer")
+    write("\n B]     itemname      integer")
+    write("\n C]     e enchantname integer\n\n > ")
     local req = read()
     local itemid, amount, isEnchant = splitItemString( string.lower(req) )
 
     write("\nYou are requesting:")
-    write("\n Name:       "..itemid)
-    write("\n Amount:     "..amount)
-    write("\n Is Enchant: "..(isEnchant and "yes" or "no"))
+    write("\n Name:    "..itemid)
+    write("\n Amount:  "..amount)
+    write("\n Enchant: "..(isEnchant and "yes" or "no"))
     write("\nYes or No?\n > ")
     local yn = string.lower(read())
 
