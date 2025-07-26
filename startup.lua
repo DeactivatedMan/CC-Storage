@@ -12,11 +12,14 @@ if fs.exists("outputB.lua") then
 end
 
 if fs.exists("input.lua") then
-    multishell.launch({}, "input.lua")
+    local input = multishell.launch({}, "input.lua")
+    multishell.setTitle(input, "")
 end
 
 if fs.exists("output.lua") then
-    multishell.launch({}, "output.lua")
+    local output = multishell.launch({}, "output.lua")
+    multishell.setTitle(output, "Output")
+    multishell.setFocus(output)
 end
 
 write("Attempt update? Y // N\n > ")
