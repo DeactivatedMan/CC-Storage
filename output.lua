@@ -1,6 +1,6 @@
 local mainChest = "minecraft:barrel_1"
 
-local function searchAndOutput(itemid, amount) -- Used to check for items and output them
+local function searchAndOutput(itemid, amount, isEnchant) -- Used to check for items and output them
     local names = peripheral.getNames()
     local amountLeft = amount
 
@@ -15,15 +15,30 @@ local function searchAndOutput(itemid, amount) -- Used to check for items and ou
             
             for slot,item in pairs(store.list()) do
                 item = store.getItemDetail(slot) -- I hate this but it has to be here
-                if item.name:find(itemid) or item.displayName:find(itemid) then
-                    store.pushItems(mainChest, slot, amountLeft)
-                    amountLeft = math.max(0, amountLeft - item.count)
-                    --write("Transferred "..math.min(amountLeft, item.count).." items..\n")
-                    
-                    if amountLeft <= 0 then
-                        return amountLeft
-                    end
 
+                if isEnchant and item.name == "minecraft:enchanted_book" then -- Checks if enchanted_book and requested enchantment
+                    local enchantments = item.enchantments
+                    for _,enchant in pairs(enchantments) do
+                        if enchant.name:find(itemid) or string.lower(item.displayName):find(itemid) then
+                            store.pushItems(mainChest, slot, 1)
+                            amountLeft = math.max(0, amountLeft - 1)
+
+                            if amountLeft <= 0 then
+                                return amountLeft
+                            end
+                        end
+                    end
+                else
+
+                    if item.name:find(itemid) or string.lower(item.displayName):find(itemid) then
+                        store.pushItems(mainChest, slot, amountLeft)
+                        amountLeft = math.max(0, amountLeft - item.count)
+                        
+                        if amountLeft <= 0 then
+                            return amountLeft
+                        end
+
+                    end
                 end
             end
 
@@ -35,36 +50,42 @@ end
 
 local function splitItemString(input)
     local lastSpace = input:find(" [^ ]*$")
+    local a = input
+    local b = "1"
+    local c = input:match("^e ")
 
     if lastSpace then
         local first = input:sub(1, lastSpace -1)
         local second = input:sub(lastSpace +1)
 
-        return first, second
-    else
-        return input, "1"
+        if not second:find("%D") then
+            --return first, second, input:match("^e ")
+            a = first
+            b = second
+        end
     end
+
+    if c then
+        a = a:sub(3)
+    end
+    
+    return a,b,c
 end
 
 
 --write("\nSelf attempt: "..table.concat(splitItemString("minecraft:chest 1")", ").."\n\n")
 
 while true do
-    write("\nRequest Formats:\n A]     itemmod:item integer\n B]     itemname integer\n\n > ")
+    write("\nRequest Formats:\n A]     itemmod:item integer\n B]     itemname integer\n C]     e enchantname integer\n\n > ")
     local req = read()
     write("Message inputted: "..req.."\n")
-    local itemid, amount = splitItemString( string.lower(req) )
+    local itemid, amount, isEnchant = splitItemString( string.lower(req) )
 
-    sleep(1)
-    --if not string.find(itemid, ":") then
-    --    write("Could not find required : in itemid, did you spell it wrong?\n")
-    --elseif amount:find("%D") then
     if amount:find("%D") then
         write("Amount entered contains non-integer characters, did you spell it wrong?\n")
     else
         write("Looking for: "..amount.."x "..itemid.."\n")
-        sleep(1)
-        local amountLeft = searchAndOutput(itemid,tonumber(amount))
+        local amountLeft = searchAndOutput(itemid,tonumber(amount), isEnchant)
 
         if amountLeft == 0 then
             write("\nTransferred all items!\n")
