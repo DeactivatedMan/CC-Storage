@@ -81,19 +81,29 @@ while true do
     write("Message inputted: "..req.."\n")
     local itemid, amount, isEnchant = splitItemString( string.lower(req) )
 
-    if amount:find("%D") then
-        write("Amount entered contains non-integer characters, did you spell it wrong?\n")
-    else
-        write("Looking for: "..amount.."x "..itemid.."\n")
-        local amountLeft = searchAndOutput(itemid,tonumber(amount), isEnchant)
+    write("You are requesting:\n Name: "..itemid.."\n Amount: "..amount.."\n Is Enchant: ",isEnchant.."\nYes or No?\n > ")
+    local yn = string.lower(read())
 
-        if amountLeft == 0 then
-            write("\nTransferred all items!\n")
-        elseif amountLeft < tonumber(amount) then
-            write("\nCould not transfer all items.\n")()
-        else
-            write("\nOut of stock!\n")
+    if yn:find("y") then
+        if isEnchant then
+            write("Enchantment detected\n")
         end
+        if amount:find("%D") then
+            write("Amount entered contains non-integer characters, did you spell it wrong?\n")
+        else
+            write("Looking for: "..amount.."x "..itemid.."\n")
+            local amountLeft = searchAndOutput(itemid,tonumber(amount), isEnchant)
+
+            if amountLeft == 0 then
+                write("\nTransferred all items!\n")
+            elseif amountLeft < tonumber(amount) then
+                write("\nCould not transfer all items.\n")()
+            else
+                write("\nOut of stock!\n")
+            end
+        end
+        --sleep(1)
+    else
+        write("\nRequest cancelled.\n")
     end
-    sleep(1)
 end
