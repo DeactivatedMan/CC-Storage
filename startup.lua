@@ -1,4 +1,4 @@
-write("Start storage processes? Y // N")
+write("Start storage processes? Y // N\n  ")
 local yn = string.lower(read())
 
 if string.find(yn, "y") then
