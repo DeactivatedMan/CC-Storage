@@ -100,7 +100,7 @@ while true do
             if amountLeft == 0 then
                 write("\nTransferred all items!\n")
             elseif amountLeft < tonumber(amount) then
-                write("\nCould not transfer all items.\n")()
+                write("\nCould not transfer all items.\n")
             else
                 write("\nOut of stock!\n")
             end
