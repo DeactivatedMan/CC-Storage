@@ -78,7 +78,6 @@ end
 while true do
     write("\nRequest Formats:\n A]     itemmod:item integer\n B]     itemname integer\n C]     e enchantname integer\n\n > ")
     local req = read()
-    write("Message inputted: "..req.."\n")
     local itemid, amount, isEnchant = splitItemString( string.lower(req) )
 
     write("You are requesting:")
