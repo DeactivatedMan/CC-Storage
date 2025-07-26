@@ -80,8 +80,8 @@ while true do
     write("\n A]     itemmod:item  integer")
     write("\n B]     itemname      integer")
     write("\n C]     e enchantname integer\n\n > ")
-    local req = read()
-    local itemid, amount, isEnchant = splitItemString( string.lower(req) )
+    local req = string.lower(read()):match("^%s*(.-)%s*$")
+    local itemid, amount, isEnchant = splitItemString( req )
 
     write("\nYou are requesting:")
     write("\n Name:    "..itemid)
