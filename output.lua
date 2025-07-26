@@ -81,13 +81,14 @@ while true do
     write("Message inputted: "..req.."\n")
     local itemid, amount, isEnchant = splitItemString( string.lower(req) )
 
-    write("You are requesting:\n Name: "..itemid.."\n Amount: "..amount.."\n Is Enchant: ",isEnchant.."\nYes or No?\n > ")
+    write("You are requesting:")
+    write("\n Name:       "..itemid)
+    write("\n Amount:     "..amount)
+    write("\n Is Enchant: "..(isEnchant and "yes" or "no"))
+    write("\nYes or No?\n > ")
     local yn = string.lower(read())
 
     if yn:find("y") then
-        if isEnchant then
-            write("Enchantment detected\n")
-        end
         if amount:find("%D") then
             write("Amount entered contains non-integer characters, did you spell it wrong?\n")
         else
@@ -102,7 +103,6 @@ while true do
                 write("\nOut of stock!\n")
             end
         end
-        --sleep(1)
     else
         write("\nRequest cancelled.\n")
     end
