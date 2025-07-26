@@ -69,6 +69,8 @@ while true do
         --write("items is not blank\n")
         for slot,item in pairs(items) do
             item = peripheral.wrap("minecraft:barrel_0").getItemDetail(slot)
+
+            local archive = {item.count, item.name}
             --write("loop\n")
             --searchAndInput(item.name, slot, item.count)
 
@@ -84,9 +86,9 @@ while true do
 
             --write("amountLeft is of type "..type(amountLeft).." and contains "..amountLeft.."\n")
             if amountLeft == 0 then
-                write("Transferred all items!\n")
+                write("Transferred "..archive[1].."x "..archive[2].."!\n")
             elseif amountLeft < item.count then
-                write("Could not transfer all items.\n")
+                write("Could not transfer item "..archive[2].."\n")
                 break
             else
                 write("Out of storage!\n")
