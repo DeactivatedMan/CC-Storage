@@ -1,27 +1,52 @@
 local mainChest = "minecraft:barrel_1"
 
-local function searchAndOutput(itemid, amount, isEnchant) -- Used to check for items and output them
-    local names = peripheral.getNames()
+local function splitAtFirstColon(str)
+    local left, right = str:match("^(.-):(.*)$")
+    if left and right then
+        return right
+    else
+        return str
+    end
+end
+
+local function searchAndOutput(itemid, amount, isEnchant)
     local amountLeft = amount
 
-    for _,name in pairs(names) do -- Iterates through
-    
-        if amountLeft <= 0 then
+    local file = fs.open("stores.json", "r")
+    local jsonStr = file.readAll()
+    file.close()
+
+    local data = textutils.unserialiseJSON(jsonStr)
+    local names = false
+    local letter = splitAtFirstColon(itemid):sub(1, 1)
+
+    if isEnchant then
+        letter = "en"
+    end
+    for i,entry in ipairs(data) do
+        if entry.category == letter then
+            names = entry.peripherals
+            break
+        end
+    end
+
+    for _,name in pairs(names) do
+        if amount <= 0 then
             return amountLeft
         end
 
-        if string.find(name, ":") and amountLeft > 0 and name ~= mainChest then -- Removes any directional peripherals
-            local store = peripheral.wrap(name) -- References the storage object itself
-            
-            for slot,item in pairs(store.list()) do
-                item = store.getItemDetail(slot) -- I hate this but it has to be here
+        if name:find(":") and amountLeft > 0 and name ~= mainChest then
+            local store = peripheral.wrap(name)
 
-                if isEnchant and item.name == "minecraft:enchanted_book" then -- Checks if enchanted_book and requested enchantment
+            for slot,item in pairs(store.list()) do
+                item = store.getItemDetail(slot) -- Better item details
+
+                if isEnchant and item.name == "minecraft:enchanted_book" then
                     local enchantments = item.enchantments
-                    for _,enchant in pairs(enchantments) do
+                    for _,enchant in pairs (enchantments) do
                         if enchant.name:find(itemid) or string.lower(item.displayName):find(itemid) then
-                            store.pushItems(mainChest, slot, 1)
-                            amountLeft = math.max(0, amountLeft - 1)
+                            store.pushItems(mainChest, slot, math.min(amountLeft, item.count))
+                            amountLeft = math.max(0, amountLeft-item.count)
 
                             if amountLeft <= 0 then
                                 return amountLeft
@@ -29,23 +54,18 @@ local function searchAndOutput(itemid, amount, isEnchant) -- Used to check for i
                         end
                     end
                 else
-
                     if item.name:find(itemid) or string.lower(item.displayName):find(itemid) then
                         store.pushItems(mainChest, slot, amountLeft)
-                        amountLeft = math.max(0, amountLeft - item.count)
-                        
+                        amountLeft = math.max(0, amountLeft-item.count)
+
                         if amountLeft <= 0 then
                             return amountLeft
                         end
-
                     end
                 end
             end
-
         end
     end
-
-    return amountLeft
 end
 
 local function splitItemString(input)
@@ -71,9 +91,6 @@ local function splitItemString(input)
     
     return a,b,c
 end
-
-
---write("\nSelf attempt: "..table.concat(splitItemString("minecraft:chest 1")", ").."\n\n")
 
 while true do
     write("\nRequest Formats:")

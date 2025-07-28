@@ -1,31 +1,85 @@
 local mainChest = "minecraft:barrel_0"
 local inputChest = peripheral.find(mainChest)
 
-local function iterate(itemid, originSlot, amount, filter)
-    --write("function called\n")
-    local names = peripheral.getNames()
-    --write("names obtained:\n  ".. table.concat(names,"\n  ") )
+local function findEmptyAndAdd(input)
+    local potentials = peripheral.getNames()
+    local name = false
+
+    for _,entry in pairs(potentials) do -- Iterates through
+        if string.find(entry, ":") and not entry:find("barrel") then
+            local store = peripheral.wrap(entry)
+
+            if #store.list() == 0 then
+                table.insert(names, entry)
+                name = entry
+                break
+            end
+        end
+    end
+
+    return table.insert(input, name)
+end
+
+local function splitAtFirstColon(str)
+    local left, right = str:match("^(.-):(.*)$")
+    if left and right then
+        return right
+    else
+        return str
+    end
+end
+
+local function iterate(itemid, originSlot, amount, filter, assignNew)
     local amountLeft = amount
 
-    --write("loop start\n")
-    for _,name in pairs(names) do -- Iterates through
-        --write("looped\n")
-    
+    local file = fs.open("stores.json", "r")
+    local jsonStr = file.readAll()
+    file.close()
+
+    local data = textutils.unserialiseJSON(jsonStr)
+    local names = false
+    local letter = splitAtFirstColon(itemid):sub(1, 1)
+
+    local foundEntry = false
+
+    for i,entry in ipairs(data) do
+        if entry.category == letter then
+            foundEntry = true
+            if not assignNew then
+                names = entry.peripherals
+            elseif assignNew then
+                names = findEmptyAndAdd(entry.peripherals)
+                data[i].peripherals = names
+
+                file = fs.open("stores.json", "w")
+                file.write(textutils.serialiseJSON(data,true))
+                file.close()
+            end
+            break
+        end
+    end
+
+    if not foundEntry then
+        table.insert(data, {category=letter, peripherals=findEmptyAndAdd({})})
+        file = fs.open("stores.json", "w")
+        file.write(textutils.serialiseJSON(data,true))
+        file.close()
+    end
+
+    for _,name in pairs(names) do
         if amountLeft <= 0 then
             break
         end
 
-        if string.find(name, ":") and amountLeft > 0 and not name:find("barrel") then -- Removes any directional peripherals
-            --write("Looking in "..name.."\n")
-            local store = peripheral.wrap(name) -- References the storage object itself
+        if amountLeft > 0 and not name:find("barrel") then
+            local store = peripheral.wrap(name)
             
-            if filter then -- Checks specifically for slots with the same itemid
+            if filter then
                 for slot,item in pairs(store.list()) do
-                    --write("looped B\n")
-                    --write(item.name.." at slot "..slot.." All data:\n  "..textutils.serialize(item))
-                    item = store.getItemDetail(slot) -- I hate this but it has to be here
-                    if item.name == itemid and item.count < item.maxCount then
-                        store.pullItems(mainChest, originSlot, math.min( item.maxCount-item.count ,amountLeft ), slot)
+                    item = store.getItemDetail(slot) -- Hate it but gives more information
+
+                    if item.name == itemid and item.count < store.getItemLimit(slot) then
+                        store.pullItems(mainChest, originSlot, math.min( store.getItemLimit(slot)-item.count, amountLeft ), slot)
 
                         local originItem = peripheral.wrap("minecraft:barrel_0").getItemDetail(originSlot)
                         amountLeft = 0
@@ -34,28 +88,31 @@ local function iterate(itemid, originSlot, amount, filter)
                         if amountLeft <= 0 then
                             break
                         end
-
                     end
                 end
-            elseif #store.list() < store.size() then -- Checks specifically all blank slots
+            elseif #store.list() < store.size() then
                 for slot=1,store.size() do
                     if not store.getItemDetail(slot) then
                         store.pullItems(mainChest, originSlot, amountLeft, slot)
-                        --write("Transferred "..math.max(amountLeft,64).." items..\n")
 
                         local originItem = peripheral.wrap("minecraft:barrel_0").getItemDetail(originSlot)
                         amountLeft = 0
                         if originItem then amountLeft = originItem.count end
-
+                        
                         if amountLeft <= 0 then
                             break
                         end
                     end
                 end
             end
-
         end
     end
+    
+
+    --if not names then
+    --    table.insert( data, {category=letter, peripherals=findEmptyAndAdd({})} )
+    --end
+    
 
     return amountLeft
 end
@@ -63,28 +120,26 @@ end
 while true do
 
     local items = peripheral.wrap("minecraft:barrel_0").list()
-    --write("items is of type "..type(items).."\n")
 
     if textutils.serialize(items) ~= "{}" then
-        --write("items is not blank\n")
         for slot,item in pairs(items) do
             item = peripheral.wrap("minecraft:barrel_0").getItemDetail(slot)
 
             local archive = {item.count, item.name}
-            --write("loop\n")
-            --searchAndInput(item.name, slot, item.count)
 
             local amountLeft = item.count
-            --write("amountLeft = "..amountLeft.."\n")
             if item.count < item.maxCount then
-                amountLeft = iterate(item.name, slot, amountLeft, true)
+                amountLeft = iterate(item.name, slot, amountLeft, true, false)
             end
 
             if amountLeft > 0 then
-                amountLeft = iterate(item.name, slot, amountLeft, false)
+                amountLeft = iterate(item.name, slot, amountLeft, false, false)
             end
 
-            --write("amountLeft is of type "..type(amountLeft).." and contains "..amountLeft.."\n")
+            if amountLeft > 0 then
+                amountLeft = iterate(item.name, slot, amountLeft, false, true)
+            end
+            
             if amountLeft == 0 then
                 write("Transferred "..archive[1].."x "..archive[2].."!\n")
             elseif amountLeft < item.count then
@@ -96,6 +151,6 @@ while true do
             end
         end
     else
-        sleep(3)
+        sleep(1)
     end
 end
