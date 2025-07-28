@@ -16,8 +16,8 @@ local function findEmptyAndAdd(input)
             end
         end
     end
-
-    return table.insert(input, name)
+    table.insert(input, name)
+    return input
 end
 
 local function splitAtFirstColon(str)
