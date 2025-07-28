@@ -17,7 +17,7 @@ local function searchAndOutput(itemid, amount, isEnchant)
     file.close()
 
     local data = textutils.unserialiseJSON(jsonStr)
-    write(data.."\n")
+    write(textutils.serialise(data).."\n")
     sleep(5)
     write(jsonStr.."\n")
     sleep(5)
