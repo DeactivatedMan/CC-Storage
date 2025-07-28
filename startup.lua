@@ -1,15 +1,15 @@
 --shell.run("delete input.lua")
 --shell.run("delete output.lua")
 if not fs.exists("stores.json") then
-    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/main/stores.json stores.json")
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/hopefullybetter/stores.json stores.json")
 end
 
 if not fs.exists("input.lua") then
-    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/main/input.lua input.lua")
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/hopefullybetter/input.lua input.lua")
 end
 
 if not fs.exists("output.lua") then
-    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/main/output.lua output.lua")
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/hopefullybetter/output.lua output.lua")
 end
 
 
@@ -37,7 +37,7 @@ write("Attempt update? Y // N\n > ")
 local yn = string.lower(read())
 
 if string.find(yn, "y") then
-    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/main/input.lua inputB.lua")  -- Downloads input script
-    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/main/output.lua outputB.lua") -- Downloads output script
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/hopefullybetter/input.lua inputB.lua")  -- Downloads input script
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/hopefullybetter/output.lua outputB.lua") -- Downloads output script
     write("Updated! (Or did absolutely nothing other than reset the files..)\nrun 'reboot' to initialise\n")
 end
