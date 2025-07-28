@@ -45,7 +45,9 @@ local function iterate(itemid, originSlot, amount, filter, assignNew)
 
     if not assignNew then
         names = entry.peripherals
-    elseif assignNew then
+    end
+
+    if assignNew or not names then
         names = findEmptyAndAdd(entry.peripherals)
         data[index].peripherals = names
 
