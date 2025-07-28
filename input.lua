@@ -38,9 +38,23 @@ local function iterate(itemid, originSlot, amount, filter, assignNew)
 
     local data = textutils.unserialiseJSON(jsonStr)
     local names = false
-    local letter = splitAtFirstColon(itemid):sub(1, 1)
+    local letter = ( itemid=="minecraft:enchanted_book" and "en" or splitAtFirstColon(itemid):sub(1, 1) )
+    local index = ( string.len(letter) == 1 and string.byte(letter)-string.byte("a")+1 or 27 )
 
-    local foundEntry = false
+    local entry = data[index]
+
+    if not assignNew then
+        names = entry.peripherals
+    elseif assignNew then
+        names = findEmptyAndAdd(entry.peripherals)
+        data[i].peripherals = names
+
+        file = fs.open("stores.json", "w")
+        file.write(textutils.serialiseJSON(data,true))
+        file.close()
+    end
+
+    --[[local foundEntry = false
 
     for i,entry in ipairs(data) do
         if entry.category == letter then
@@ -64,7 +78,7 @@ local function iterate(itemid, originSlot, amount, filter, assignNew)
         file = fs.open("stores.json", "w")
         file.write(textutils.serialiseJSON(data,true))
         file.close()
-    end
+    end]]
 
     for _,name in pairs(names) do
         if amountLeft <= 0 then
