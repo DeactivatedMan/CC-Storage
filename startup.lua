@@ -1,5 +1,17 @@
 --shell.run("delete input.lua")
 --shell.run("delete output.lua")
+if not fs.exists("stores.json") then
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/main/stores.json stores.json")
+end
+
+if not fs.exists("input.lua") then
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/main/input.lua input.lua")
+end
+
+if not fs.exists("output.lua") then
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/main/output.lua output.lua")
+end
+
 
 if fs.exists("inputB.lua") then
     shell.run("delete input.lua")
@@ -10,7 +22,6 @@ if fs.exists("outputB.lua") then
     shell.run("delete output.lua")
     shell.run("rename outputB.lua output.lua")
 end
-
 if fs.exists("input.lua") then
     local input = multishell.launch({}, "input.lua")
     multishell.setTitle(input, "")
