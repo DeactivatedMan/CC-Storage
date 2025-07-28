@@ -1,4 +1,4 @@
-{
+[
     {"category": "a", "peripherals": {}},
     {"category": "b", "peripherals": {}},
     {"category": "c", "peripherals": {}},
@@ -26,4 +26,4 @@
     {"category": "y", "peripherals": {}},
     {"category": "z", "peripherals": {}},
     {"category": "en", "peripherals": {}}
-}
+]
