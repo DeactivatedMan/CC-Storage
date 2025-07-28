@@ -17,14 +17,18 @@ local function searchAndOutput(itemid, amount, isEnchant)
     file.close()
 
     local data = textutils.unserialiseJSON(jsonStr)
-    print(data)
-    print(jsonStr)
+    write(data.."\n")
+    sleep(5)
+    write(jsonStr.."\n")
+    sleep(5)
     local names = false
     local letter = ( itemid=="minecraft:enchanted_book" and "en" or splitAtFirstColon(itemid):sub(1, 1) )
     local index = ( string.len(letter) == 1 and string.byte(letter)-string.byte("a")+1 or 27 )
 
     --local entry = data[index]
     names = data[index].peripherals
+    write(table.concat(names, "\n"))
+    sleep(5)
 
 
     --[[for i,entry in ipairs(data) do
