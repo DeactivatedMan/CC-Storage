@@ -52,7 +52,7 @@ local function iterate(itemid, originSlot, amount, filter, assignNew)
         data[index].peripherals = names
 
         file = fs.open("stores.json", "w")
-        file.write(textutils.serialiseJSON(data,true))
+        file.write(textutils.serialiseJSON(data))
         file.close()
     end
 
