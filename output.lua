@@ -17,6 +17,8 @@ local function searchAndOutput(itemid, amount, isEnchant)
     file.close()
 
     local data = textutils.unserialiseJSON(jsonStr)
+    print(data)
+    print(jsonStr)
     local names = false
     local letter = ( itemid=="minecraft:enchanted_book" and "en" or splitAtFirstColon(itemid):sub(1, 1) )
     local index = ( string.len(letter) == 1 and string.byte(letter)-string.byte("a")+1 or 27 )
