@@ -10,7 +10,7 @@ local function findEmptyAndAdd(input)
             local store = peripheral.wrap(entry)
 
             if #store.list() == 0 then
-                table.insert(names, entry)
+                --table.insert(names, entry)
                 name = entry
                 break
             end
@@ -47,7 +47,7 @@ local function iterate(itemid, originSlot, amount, filter, assignNew)
         names = entry.peripherals
     elseif assignNew then
         names = findEmptyAndAdd(entry.peripherals)
-        data[i].peripherals = names
+        data[index].peripherals = names
 
         file = fs.open("stores.json", "w")
         file.write(textutils.serialiseJSON(data,true))
