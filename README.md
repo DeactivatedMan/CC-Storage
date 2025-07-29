@@ -1,5 +1,5 @@
 Just run:
 
-wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/main/startup.lua
+wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/hopefullybetter/startup.lua
 
 Then reboot!
