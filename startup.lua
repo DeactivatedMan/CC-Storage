@@ -95,11 +95,16 @@ end
 -- Asks end user if they wish to update
 write("Attempt update? Y // N\n > ")
 local yn = string.lower(readWithTimeout(15, ""))
-
 if string.find(yn, "y") then
-    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/" .. branch .. "/input.lua")  -- Downloads input script
-    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/" .. branch .. "/output.lua") -- Downloads output script
-    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/" .. branch ..
-        "/defragment.lua")                                                                                               -- Downloads defrag script
-    write("Updated! (Or did absolutely nothing other than reset the files..)\nrun 'reboot' to initialise\n")
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/" ..
+        branch .. "/startup.lua")
+    shell.delete("CONSTANTS.lua")
+    shell.delete("input.lua")
+    shell.delete("output.lua")
+    shell.delete("defragment.lua")
+    shell.delete("redoJson.lua")
+
+    write("\nUpdate complete! Restarting CC-Storage.\n")
+
+    shell.run("reboot")
 end
