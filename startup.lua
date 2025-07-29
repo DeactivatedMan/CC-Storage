@@ -66,7 +66,7 @@ end
 -- Sanity checking and condensing storage
 if fs.exists("defragment.lua") then
     write("\nDefragmenting storage, please wait.\n")
-    os.run({}, "defragment.lua")
+    shell.run("defragment")
     write("\nDefragmentation is complete!\n\n")
 end
 if fs.exists("redoJson.lua") then
