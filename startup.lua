@@ -22,6 +22,12 @@ if fs.exists("outputB.lua") then
     shell.run("delete output.lua")
     shell.run("rename outputB.lua output.lua")
 end
+
+if fs.exists("defragment.lua") then
+    local input = multishell.launch({}, "defragment.lua")
+    multishell.setTitle(input, "Defragging...")
+end
+
 if fs.exists("input.lua") then
     local input = multishell.launch({}, "input.lua")
     multishell.setTitle(input, "")

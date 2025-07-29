@@ -3,8 +3,7 @@ local jsonStr = file.readAll()
 file.close()
 local json = textutils.unserializeJSON(jsonStr) or {}
 
-local sameItems = {
-}
+local sameItems = {}
 
 for _, entry in ipairs(json) do
   local key = entry[1] .. entry[2]

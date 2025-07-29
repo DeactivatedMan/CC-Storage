@@ -1,98 +1,40 @@
 local mainChest = "minecraft:barrel_0"
+local inputChest = peripheral.wrap(mainChest)
 
-local function iterate(itemid, displayname, originSlot, amount)
-    local amountLeft = amount
+local function addToBackpack(slot, item)
+    local potentials = peripheral.getNames()
 
-    local fileR = fs.open("items.json", "r")
-    local jsonStr = fileR.readAll()
-    fileR.close()
-
-    local data = textutils.unserialiseJSON(jsonStr)
-
-    if type(data) ~= "table" or #data == 0 then
-        data = {}
-    end
-
-    for _,entry in pairs(data) do -- Checks pre-existing data
-        if entry[1] == itemid and entry[2] == displayname then
-            local store = peripheral.wrap("sophisticatedbackpacks:backpack_"..tostring(entry[3]))
-            local item = store.getItemDetail(entry[4])
-
-            if item.count < store.getItemLimit(entry[4]) then
-                local transferred = store.pullItems( mainChest, originSlot, amountLeft, entry[4] )
-                amountLeft = amountLeft - transferred
-
-                if amountLeft <= 0 then
-                    return 0
+    for id, entry in pairs(potentials) do
+        if entry:find("backpack") then
+            local store = peripheral.wrap(entry)
+            if #store.list() < store.size() then
+                store.pullItems(mainChest, slot, item.count, #store.list() + 1)
+                local file = fs.open("items.json", "r")
+                local jsonStr = file.readAll()
+                file.close()
+                local data = textutils.unserializeJSON(jsonStr)
+                if type(data) ~= "table" or #data == 0 then
+                    data = {}
                 end
+                --table.insert(json, { storage = entry, slot = #store.list(), name = item.name, count = item.count })
+                table.insert(data, { item.name, item.displayName, entry:match(".*_(.+)$"),  #store.list(), item.count})
+                file = fs.open("items.json", "w")
+                file.write(textutils.serializeJSON(data))
+                file.close()
+                print("Added item from slot " .. slot .. " to backpack " .. id)
+                return
             end
         end
     end
-
-    if amountLeft > 0 then
-        local potentials = peripheral.getNames()
-
-        for _,name in pairs(potentials) do
-            if name:find("backpack") then
-                local store = peripheral.wrap(name)
-
-                if #store.list() < store.size() then
-                    for slot=1,store.size() do
-                        local slotData = store.getItemDetail(slot)
-
-                        if not slotData then
-                            local transferred = store.pullItems( mainChest, originSlot, amountLeft, slot )
-                            amountLeft = amountLeft - transferred
-                            
-                            table.insert(data, {itemid, displayname, name:match(".*_(.+)$"), slot, transferred})
-
-                            local fileW = fs.open("items.json", "w")
-                            fileW.write(textutils.serialiseJSON(data))
-                            fileW.close()
-
-                            if amountLeft <= 0 then
-                                return 0
-                            end
-                        end
-
-                        if amountLeft <= 0 then
-                            return 0
-                        end
-                    end
-                end
-            end
-
-            if amountLeft <= 0 then
-                return 0
-            end
-        end
-    end
-
-    return amountLeft
 end
 
+
 while true do
-
-    local items = peripheral.wrap(mainChest).list()
-
+    local items = inputChest.list()
     if textutils.serialize(items) ~= "{}" then
-        for slot,item in pairs(items) do
-            item = peripheral.wrap("minecraft:barrel_0").getItemDetail(slot)
-
-            local archive = {item.count, item.name}
-
-            local amountLeft = item.count
-            amountLeft = iterate(item.name, item.displayName, slot, amountLeft)
-            
-            if amountLeft == 0 then
-                write("Transferred "..archive[1].."x "..archive[2].."!\n")
-            elseif amountLeft < item.count then
-                write("Could not transfer item "..archive[2].."\n")
-                break
-            else
-                write("Out of storage!\n")
-                break
-            end
+        for slot, item in pairs(items) do
+            addToBackpack(slot, inputChest.getItemDetail(slot))
+            write("Added new item " .. item.name .. " to backpack." .. item.count)
         end
     else
         sleep(1)

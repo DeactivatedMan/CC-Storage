@@ -11,7 +11,7 @@ for _,name in pairs(names) do
                 local item = store.getItemDetail(slot)
 
                 if item then
-                    table.insert(data, {item.name, item.displayName, name:match(".*_(.+)$"), slot})
+                    table.insert(data, {item.name, item.displayName, name:match(".*_(.+)$"), slot, item.count})
                 end
             end
         end

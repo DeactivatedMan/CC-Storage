@@ -8,12 +8,14 @@ local function iterate(itemid, amount)
     file.close()
 
     local data = textutils.unserialiseJSON(jsonStr)
-
+    local endData = data; local offset = 0
 
     for index,entry in pairs(data) do
         local check = false
         -- Checks if itemid (minecraft:andesite) has itemid in, then if displayname (Andesite) has itemid in
         if string.find(entry[1], itemid) or string.find(string.lower(entry[2]), itemid) then check = true end
+        
+        if check then write("\nFound\n") end
 
         local store = peripheral.wrap("sophisticatedbackpacks:backpack_"..tostring(entry[3]))
         local item = store.getItemDetail(entry[4])
@@ -30,11 +32,10 @@ local function iterate(itemid, amount)
             amountLeft = amountLeft - transferred
             
             if transferred == item.count then
-                table.remove(data, index)
-
-                local file = fs.open("items.json", "w")
-                file.write(textutils.serialiseJSON(data))
-                file.close()
+                table.remove(endData, index + offset)
+                offset = offset - 1
+            elseif transferred > 0 then
+                endData[index+offset][5] = endData[index+offset][5] - transferred
             end
 
             if amountLeft <= 0 then
@@ -42,6 +43,10 @@ local function iterate(itemid, amount)
             end
         end
     end
+
+    local file = fs.open("items.json", "w")
+    file.write(textutils.serialiseJSON(endData))
+    file.close()
 
     return amountLeft
 end
