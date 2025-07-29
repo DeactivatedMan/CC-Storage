@@ -42,7 +42,9 @@ while true do
         if defragmented then
             sleep(1)
         else
+            write("\nDefragmenting storage, please wait.\n")
             os.run({}, "defragment")
+            write("Defragmentation is complete!\n\n")
             defragmented = true
         end
     end
