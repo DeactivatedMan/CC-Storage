@@ -1,7 +1,7 @@
 --shell.run("delete input.lua")
 --shell.run("delete output.lua")
-if not fs.exists("stores.json") then
-    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/hopefullybetter/stores.json stores.json")
+if not fs.exists("items.json") then
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/hopefullybetter/items.json stores.json")
 end
 
 if not fs.exists("input.lua") then
