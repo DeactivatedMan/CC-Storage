@@ -28,6 +28,7 @@ local function addToBackpack(slot, item)
     end
 end
 
+local defragmented = true
 
 while true do
     local items = inputChest.list()
@@ -36,7 +37,13 @@ while true do
             addToBackpack(slot, inputChest.getItemDetail(slot))
             write("Added new item " .. item.name .. " to backpack." .. item.count)
         end
+        defragmented = false
     else
-        sleep(1)
+        if defragmented then
+            sleep(1)
+        else
+            os.run({}, "defragment")
+            defragmented = true
+        end
     end
 end

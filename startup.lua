@@ -24,8 +24,9 @@ if fs.exists("outputB.lua") then
 end
 
 if fs.exists("defragment.lua") then
-    local input = multishell.launch({}, "defragment.lua")
-    multishell.setTitle(input, "Defragging...")
+    write("\nDefragmenting storage, please wait.\n")
+    os.run({}, "defragment.lua")
+    write("Defragmentation is complete!\n")
 end
 
 if fs.exists("input.lua") then

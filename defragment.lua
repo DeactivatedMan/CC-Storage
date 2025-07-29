@@ -16,7 +16,7 @@ end
 
 for itemName, entries in pairs(sameItems) do
   if #entries > 1 then
-    write("Found multiple entries for item: " .. itemName .. "\n")
+    write("\nFound multiple entries for item: " .. itemName .. "\n")
     local i = 1
     while i <= #entries do
       if entries[i][5] < 128 then
