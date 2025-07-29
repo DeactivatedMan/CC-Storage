@@ -8,12 +8,11 @@ local function iterate(itemid, displayname, originSlot, amount)
     fileR.close()
 
     local data = textutils.unserialiseJSON(jsonStr)
-    write(type(data))
 
     if type(data) ~= "table" or #data == 0 then
         data = {}
     end
-    write(data)
+
     for _,entry in pairs(data) do -- Checks pre-existing data
         if entry.itemid == itemid and entry.displayname == displayname then
             local store = peripheral.wrap("sophisticatedbackpacks:backpack_"..tostring(entry.storeid))
@@ -24,7 +23,7 @@ local function iterate(itemid, displayname, originSlot, amount)
                 amountLeft = amountLeft - transferred
 
                 if amountLeft <= 0 then
-                    break
+                    return 0
                 end
             end
         end
@@ -52,19 +51,19 @@ local function iterate(itemid, displayname, originSlot, amount)
                             fileW.close()
 
                             if amountLeft <= 0 then
-                                break
+                                return 0
                             end
                         end
 
                         if amountLeft <= 0 then
-                            break
+                            return 0
                         end
                     end
                 end
             end
 
             if amountLeft <= 0 then
-                break
+                return 0
             end
         end
     end
