@@ -9,19 +9,20 @@ local function iterate(itemid, displayname, originSlot, amount)
 
     local data = textutils.unserialiseJSON(jsonStr)
 
-    if data ~= "[]" then
-        for _,entry in pairs(data) do -- Checks pre-existing data
-            if entry.itemid == itemid or entry.displayname == displayname then
-                local store = peripheral.wrap("sophisticatedbackpacks:backpack_"..tostring(entry.storeid))
-                local item = store.getItemDetail(entry.slot)
+    if type(data) ~= "table" or #data == 0 then
+        data = {}
+    end
+    for _,entry in pairs(data) do -- Checks pre-existing data
+        if entry.itemid == itemid or entry.displayname == displayname then
+            local store = peripheral.wrap("sophisticatedbackpacks:backpack_"..tostring(entry.storeid))
+            local item = store.getItemDetail(entry.slot)
 
-                if item.count < store.getItemLimit(entry.slot) then
-                    local transferred = store.pullItems( mainChest, originSlot, amountLeft, entry.slot )
-                    amountLeft = amountLeft - transferred
+            if item.count < store.getItemLimit(entry.slot) then
+                local transferred = store.pullItems( mainChest, originSlot, amountLeft, entry.slot )
+                amountLeft = amountLeft - transferred
 
-                    if amountLeft <= 0 then
-                        break
-                    end
+                if amountLeft <= 0 then
+                    break
                 end
             end
         end
