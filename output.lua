@@ -1,3 +1,4 @@
+local CONSTANTS = require("CONSTANTS")
 local mainChest = "minecraft:barrel_1"
 
 local function iterate(itemid, amount)
@@ -10,32 +11,33 @@ local function iterate(itemid, amount)
     local data = textutils.unserialiseJSON(jsonStr)
     local endData = data; local offset = 0
 
-    for index,entry in pairs(data) do
+    for index, entry in pairs(data) do
         local check = false
         -- Checks if itemid (minecraft:andesite) has itemid in, then if displayname (Andesite) has itemid in
-        if string.find(entry[1], itemid) or string.find(string.lower(entry[2]), itemid) then check = true end
-        
+        if string.find(entry[1], itemid) or string.find(string.lower(entry[CONSTANTS.INDEXES.DISPLAY_NAME]), itemid) then check = true end
+
         if check then write("\nFound\n") end
 
-        local store = peripheral.wrap("sophisticatedbackpacks:backpack_"..tostring(entry[3]))
-        local item = store.getItemDetail(entry[4])
-        
+        local store = peripheral.wrap("sophisticatedbackpacks:backpack_" .. tostring(entry[CONSTANTS.INDEXES.STORE_ID]))
+        local item = store.getItemDetail(entry[CONSTANTS.INDEXES.SLOT])
+
         -- Checks enchantments if the item has any and user is looking for enchants
-        if entry[1] == "minecraft:enchanted_book" and item.enchantments then
-            for _,enchant in pairs(item.enchantments) do
+        if entry[CONSTANTS.INDEXES.ID] == "minecraft:enchanted_book" and item.enchantments then
+            for _, enchant in pairs(item.enchantments) do
                 if string.find(enchant.name, itemid) or string.find(string.lower(enchant.displayName), itemid) then check = true end
             end
         end
 
         if check then
-            local transferred = store.pushItems( mainChest, entry[4], amountLeft)
+            local transferred = store.pushItems(mainChest, entry[4], amountLeft)
             amountLeft = amountLeft - transferred
-            
+
             if transferred == item.count then
                 table.remove(endData, index + offset)
                 offset = offset - 1
             elseif transferred > 0 then
-                endData[index+offset][5] = endData[index+offset][5] - transferred
+                endData[index + offset][CONSTANTS.INDEXES.AMOUNT] = endData[index + offset][CONSTANTS.INDEXES.AMOUNT] -
+                    transferred
             end
 
             if amountLeft <= 0 then
@@ -53,7 +55,7 @@ end
 
 local function splitItemString(input)
     local roman = {
-        ["0"] = "n",  -- Optional: 0 isn't typically Roman, using "N" (nulla) or skip it
+        ["0"] = "n", -- Optional: 0 isn't typically Roman, using "N" (nulla) or skip it
         ["1"] = "i",
         ["2"] = "ii",
         ["3"] = "iii",
@@ -73,7 +75,7 @@ local function splitItemString(input)
         local first = input:sub(1, lastSpace - 1)
         local second = input:sub(lastSpace + 1)
 
-        if not second:find("%D") then  -- second is digits only
+        if not second:find("%D") then -- second is digits only
             a = first
             b = second
         end
@@ -82,7 +84,7 @@ local function splitItemString(input)
     -- Replace a single-digit number in `a` with its Roman numeral
     a = a:gsub("%f[%d](%d)%f[%D]", function(digit)
         return roman[digit] or digit
-    end, 1)  -- Only replace the first occurrence
+    end, 1) -- Only replace the first occurrence
 
     return a, b
 end
@@ -94,11 +96,11 @@ while true do
     write("\n B]     itemname      amount")
     write("\n C]     enchantname   level    amount\nAnything after name is optional\n\n > ")
     local req = string.lower(read()):match("^%s*(.-)%s*$")
-    local itemid, amount = splitItemString( req )
+    local itemid, amount = splitItemString(req)
 
     write("\nYou are requesting:")
-    write("\n Name:    "..itemid)
-    write("\n Amount:  "..amount)
+    write("\n Name:    " .. itemid)
+    write("\n Amount:  " .. amount)
     write("\nYes or No?\n > ")
     local yn = string.lower(read())
 
@@ -107,7 +109,7 @@ while true do
             write("\nAmount entered contains non-integer characters, did you spell it wrong?\n")
         else
             write("\nLooking for your item...")
-            local amountLeft = iterate(itemid,tonumber(amount), isEnchant)
+            local amountLeft = iterate(itemid, tonumber(amount), isEnchant)
 
             if amountLeft == 0 then
                 write("\nTransferred all items!\n")
