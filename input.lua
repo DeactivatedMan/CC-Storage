@@ -3,9 +3,9 @@ local mainChest = "minecraft:barrel_0"
 local function iterate(itemid, displayname, originSlot, amount)
     local amountLeft = amount
 
-    local file = fs.open("items.json", "r")
-    local jsonStr = file.readAll()
-    file.close()
+    local fileR = fs.open("items.json", "r")
+    local jsonStr = fileR.readAll()
+    fileR.close()
 
     local data = textutils.unserialiseJSON(jsonStr)
 
@@ -44,9 +44,9 @@ local function iterate(itemid, displayname, originSlot, amount)
                             
                             table.insert(data, {itemid=itemid, displayname=displayname, storeid=name:match(".*_(.+)$"), slot=slot})
 
-                            file = fs.open("items.json", "w")
-                            file.write(textutils.serialiseJSON(data))
-                            file.close()
+                            local fileW = fs.open("items.json", "w")
+                            fileW.write(textutils.serialiseJSON(data))
+                            fileW.close()
 
                             if amountLeft <= 0 then
                                 break
