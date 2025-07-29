@@ -1,6 +1,6 @@
 local mainChest = "minecraft:barrel_0"
 
-local function iterate(itemid, displayname,  originSlot, amount)
+local function iterate(itemid, displayname, originSlot, amount)
     local amountLeft = amount
 
     local file = fs.open("items.json", "r")
@@ -70,17 +70,7 @@ while true do
             local archive = {item.count, item.name}
 
             local amountLeft = item.count
-            if item.count < item.maxCount then
-                amountLeft = iterate(item.name, slot, amountLeft, true, false)
-            end
-
-            if amountLeft > 0 then
-                amountLeft = iterate(item.name, slot, amountLeft, false, false)
-            end
-
-            if amountLeft > 0 then
-                amountLeft = iterate(item.name, slot, amountLeft, false, true)
-            end
+            amountLeft = iterate(item.name, item.displayName, slot, amountLeft)
             
             if amountLeft == 0 then
                 write("Transferred "..archive[1].."x "..archive[2].."!\n")
