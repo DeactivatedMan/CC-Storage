@@ -14,12 +14,12 @@ local function iterate(itemid, displayname, originSlot, amount)
     end
 
     for _,entry in pairs(data) do -- Checks pre-existing data
-        if entry.itemid == itemid and entry.displayname == displayname then
-            local store = peripheral.wrap("sophisticatedbackpacks:backpack_"..tostring(entry.storeid))
-            local item = store.getItemDetail(entry.slot)
+        if entry[1] == itemid and entry[2] == displayname then
+            local store = peripheral.wrap("sophisticatedbackpacks:backpack_"..tostring(entry[3]))
+            local item = store.getItemDetail(entry[4])
 
-            if item.count < store.getItemLimit(entry.slot) then
-                local transferred = store.pullItems( mainChest, originSlot, amountLeft, entry.slot )
+            if item.count < store.getItemLimit(entry[4]) then
+                local transferred = store.pullItems( mainChest, originSlot, amountLeft, entry[4] )
                 amountLeft = amountLeft - transferred
 
                 if amountLeft <= 0 then
@@ -44,7 +44,7 @@ local function iterate(itemid, displayname, originSlot, amount)
                             local transferred = store.pullItems( mainChest, originSlot, amountLeft, slot )
                             amountLeft = amountLeft - transferred
                             
-                            table.insert(data, {itemid=itemid, displayname=displayname, storeid=name:match(".*_(.+)$"), slot=slot})
+                            table.insert(data, {itemid, displayname, name:match(".*_(.+)$"), slot})
 
                             local fileW = fs.open("items.json", "w")
                             fileW.write(textutils.serialiseJSON(data))
