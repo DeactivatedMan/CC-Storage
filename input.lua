@@ -35,15 +35,22 @@ while true do
     if textutils.serialize(items) ~= "{}" then
         for slot, item in pairs(items) do
             addToBackpack(slot, inputChest.getItemDetail(slot))
-            write("Added new item " .. item.name .. " to backpack." .. item.count)
+            if inputChest.getItemDetail(slot) ~= nil then
+                write("\nNot enough storage, running defragmentation.\n")
+                os.run({}, "defragment.lua")
+                write("\nDefragmentation is complete!\n\n")
+                defragmented = true
+            else
+                write("Added new item " .. item.name .. " (".. item.count .. ") " .. " to backpack.")
+                defragmented = false
+            end
         end
-        defragmented = false
     else
         if defragmented then
             sleep(1)
         else
             write("\nDefragmenting storage, please wait.\n")
-            os.run({}, "defragment")
+            os.run({}, "defragment.lua")
             write("\nDefragmentation is complete!\n\n")
             defragmented = true
         end
