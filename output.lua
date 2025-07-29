@@ -1,3 +1,4 @@
+local CONSTANTS = require("CONSTANTS")
 local mainChest = "minecraft:barrel_1"
 
 local function iterate(itemid, amount)
@@ -13,15 +14,15 @@ local function iterate(itemid, amount)
     for index, entry in pairs(data) do
         local check = false
         -- Checks if itemid (minecraft:andesite) has itemid in, then if displayname (Andesite) has itemid in
-        if string.find(entry[1], itemid) or string.find(string.lower(entry[INDEXES.displayName]), itemid) then check = true end
+        if string.find(entry[1], itemid) or string.find(string.lower(entry[CONSTANTS.INDEXES.DISPLAY_NAME]), itemid) then check = true end
 
         if check then write("\nFound\n") end
 
-        local store = peripheral.wrap("sophisticatedbackpacks:backpack_" .. tostring(entry[INDEXES.storeId]))
-        local item = store.getItemDetail(entry[INDEXES.slot])
+        local store = peripheral.wrap("sophisticatedbackpacks:backpack_" .. tostring(entry[CONSTANTS.INDEXES.STORE_ID]))
+        local item = store.getItemDetail(entry[CONSTANTS.INDEXES.SLOT])
 
         -- Checks enchantments if the item has any and user is looking for enchants
-        if entry[INDEXES.id] == "minecraft:enchanted_book" and item.enchantments then
+        if entry[CONSTANTS.INDEXES.ID] == "minecraft:enchanted_book" and item.enchantments then
             for _, enchant in pairs(item.enchantments) do
                 if string.find(enchant.name, itemid) or string.find(string.lower(enchant.displayName), itemid) then check = true end
             end
@@ -35,7 +36,8 @@ local function iterate(itemid, amount)
                 table.remove(endData, index + offset)
                 offset = offset - 1
             elseif transferred > 0 then
-                endData[index + offset][INDEXES] = endData[index + offset][INDEXES.amount] - transferred
+                endData[index + offset][CONSTANTS.INDEXES.AMOUNT] = endData[index + offset][CONSTANTS.INDEXES.AMOUNT] -
+                    transferred
             end
 
             if amountLeft <= 0 then

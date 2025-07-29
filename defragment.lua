@@ -1,3 +1,5 @@
+local CONSTANTS = require("CONSTANTS")
+
 local file = fs.open("items.json", "r")
 local jsonStr = file.readAll()
 file.close()
@@ -6,7 +8,7 @@ local json = textutils.unserializeJSON(jsonStr) or {}
 local sameItems = {}
 
 for _, entry in ipairs(json) do
-  local key = entry[INDEXES.id] .. entry[INDEXES.displayName]
+  local key = entry[CONSTANTS.INDEXES.ID] .. entry[CONSTANTS.INDEXES.DISPLAY_NAME]
   if not sameItems[key] then
     sameItems[key] = {}
   end
@@ -19,17 +21,18 @@ for itemName, entries in pairs(sameItems) do
     write("\nFound multiple entries for item: " .. itemName .. "\n")
     local i = 1
     while i <= #entries do
-      if entries[i][INDEXES.amount] < 128 then
+      if entries[i][CONSTANTS.INDEXES.AMOUNT] < 128 then
         for x = #entries, i + 1, -1 do
           local entry1 = entries[i]
           local entry2 = entries[x]
-          local toMove = math.min(128 - entry1[INDEXES.amount], entry2[INDEXES.amount])
-          entry1[INDEXES.amount] = entry1[INDEXES.amount] + toMove
-          entry2[INDEXES.amount] = entry2[INDEXES.amount] - toMove
-          local toChest = peripheral.wrap("sophisticatedbackpacks:backpack_" .. tostring(entry1[INDEXES.storeId]))
-          toChest.pullItems("sophisticatedbackpacks:backpack_" .. tostring(entry2[INDEXES.storeId]), entry2
-          [INDEXES.slot], toMove, entry1[INDEXES.slot])
-          if entry2[INDEXES.amount] <= 0 then
+          local toMove = math.min(128 - entry1[CONSTANTS.INDEXES.AMOUNT], entry2[CONSTANTS.INDEXES.AMOUNT])
+          entry1[CONSTANTS.INDEXES.AMOUNT] = entry1[CONSTANTS.INDEXES.AMOUNT] + toMove
+          entry2[CONSTANTS.INDEXES.AMOUNT] = entry2[CONSTANTS.INDEXES.AMOUNT] - toMove
+          local toChest = peripheral.wrap("sophisticatedbackpacks:backpack_" ..
+            tostring(entry1[CONSTANTS.INDEXES.STORE_ID]))
+          toChest.pullItems("sophisticatedbackpacks:backpack_" .. tostring(entry2[CONSTANTS.INDEXES.STORE_ID]), entry2
+            [CONSTANTS.INDEXES.SLOT], toMove, entry1[CONSTANTS.INDEXES.SLOT])
+          if entry2[CONSTANTS.INDEXES.AMOUNT] <= 0 then
             table.remove(entries, x)
           end
         end
