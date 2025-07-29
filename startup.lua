@@ -36,6 +36,13 @@ if not fs.exists("output.lua") then
     shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/test/output.lua output.lua")
 end
 
+if not fs.exists("defragment.lua") then
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/test/defragment.lua defragment.lua")
+end
+if not fs.exists("redoJson.lua") then
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/test/redoJson.lua redoJson.lua")
+end
+
 -- Replaces old files with newly downloaded
 if fs.exists("inputB.lua") then
     shell.run("delete input.lua")
