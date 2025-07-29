@@ -1,117 +1,106 @@
+local CONSTANTS = require("CONSTANTS")
 local mainChest = "minecraft:barrel_1"
 
-local function splitAtFirstColon(str)
-    local left, right = str:match("^(.-):(.*)$")
-    if left and right then
-        return right
-    else
-        return str
-    end
-end
-
-local function searchAndOutput(itemid, amount, isEnchant)
+local function iterate(itemid, amount)
     local amountLeft = amount
 
-    local file = fs.open("stores.json", "r")
+    local file = fs.open("items.json", "r")
     local jsonStr = file.readAll()
     file.close()
 
     local data = textutils.unserialiseJSON(jsonStr)
-    write(textutils.serialise(data).."\n")
-    sleep(5)
-    write(jsonStr.."\n")
-    sleep(5)
-    local names = false
-    local letter = ( itemid=="minecraft:enchanted_book" and "en" or splitAtFirstColon(itemid):sub(1, 1) )
-    local index = ( string.len(letter) == 1 and string.byte(letter)-string.byte("a")+1 or 27 )
+    local endData = data; local offset = 0
 
-    --local entry = data[index]
-    names = data[index].peripherals
-    write(table.concat(names, "\n"))
-    sleep(5)
+    for index, entry in pairs(data) do
+        local check = false
+        -- Checks if itemid (minecraft:andesite) has itemid in, then if displayname (Andesite) has itemid in
+        if string.find(entry[1], itemid) or string.find(string.lower(entry[CONSTANTS.INDEXES.DISPLAY_NAME]), itemid) then check = true end
 
+        if check then write("\nFound\n") end
 
-    --[[for i,entry in ipairs(data) do
-        if entry.category == letter then
-            names = entry.peripherals
-            break
-        end
-    end]]
+        local store = peripheral.wrap("sophisticatedbackpacks:backpack_" .. tostring(entry[CONSTANTS.INDEXES.STORE_ID]))
+        local item = store.getItemDetail(entry[CONSTANTS.INDEXES.SLOT])
 
-    for _,name in pairs(names) do
-        if amount <= 0 then
-            return amountLeft
+        -- Checks enchantments if the item has any and user is looking for enchants
+        if entry[CONSTANTS.INDEXES.ID] == "minecraft:enchanted_book" and item.enchantments then
+            for _, enchant in pairs(item.enchantments) do
+                if string.find(enchant.name, itemid) or string.find(string.lower(enchant.displayName), itemid) then check = true end
+            end
         end
 
-        if name:find(":") and amountLeft > 0 and name ~= mainChest then
-            local store = peripheral.wrap(name)
+        if check then
+            local transferred = store.pushItems(mainChest, entry[4], amountLeft)
+            amountLeft = amountLeft - transferred
 
-            for slot,item in pairs(store.list()) do
-                item = store.getItemDetail(slot) -- Better item details
+            if transferred == item.count then
+                table.remove(endData, index + offset)
+                offset = offset - 1
+            elseif transferred > 0 then
+                endData[index + offset][CONSTANTS.INDEXES.AMOUNT] = endData[index + offset][CONSTANTS.INDEXES.AMOUNT] -
+                    transferred
+            end
 
-                if isEnchant and item.name == "minecraft:enchanted_book" then
-                    local enchantments = item.enchantments
-                    for _,enchant in pairs (enchantments) do
-                        if enchant.name:find(itemid) or string.lower(item.displayName):find(itemid) then
-                            store.pushItems(mainChest, slot, math.min(amountLeft, item.count))
-                            amountLeft = math.max(0, amountLeft-item.count)
-
-                            if amountLeft <= 0 then
-                                return amountLeft
-                            end
-                        end
-                    end
-                else
-                    if item.name:find(itemid) or string.lower(item.displayName):find(itemid) then
-                        store.pushItems(mainChest, slot, amountLeft)
-                        amountLeft = math.max(0, amountLeft-item.count)
-
-                        if amountLeft <= 0 then
-                            return amountLeft
-                        end
-                    end
-                end
+            if amountLeft <= 0 then
+                break
             end
         end
     end
+
+    local file = fs.open("items.json", "w")
+    file.write(textutils.serialiseJSON(endData))
+    file.close()
+
+    return amountLeft
 end
 
 local function splitItemString(input)
+    local roman = {
+        ["0"] = "n", -- Optional: 0 isn't typically Roman, using "N" (nulla) or skip it
+        ["1"] = "i",
+        ["2"] = "ii",
+        ["3"] = "iii",
+        ["4"] = "iv",
+        ["5"] = "v",
+        ["6"] = "vi",
+        ["7"] = "vii",
+        ["8"] = "viii",
+        ["9"] = "ix",
+    }
+
     local lastSpace = input:find(" [^ ]*$")
     local a = input
     local b = "1"
-    local c = input:match("^e ")
 
     if lastSpace then
-        local first = input:sub(1, lastSpace -1)
-        local second = input:sub(lastSpace +1)
+        local first = input:sub(1, lastSpace - 1)
+        local second = input:sub(lastSpace + 1)
 
-        if not second:find("%D") then
-            --return first, second, input:match("^e ")
+        if not second:find("%D") then -- second is digits only
             a = first
             b = second
         end
     end
 
-    if c then
-        a = a:sub(3)
-    end
-    
-    return a,b,c
+    -- Replace a single-digit number in `a` with its Roman numeral
+    a = a:gsub("%f[%d](%d)%f[%D]", function(digit)
+        return roman[digit] or digit
+    end, 1) -- Only replace the first occurrence
+
+    return a, b
 end
+
 
 while true do
     write("\nRequest Formats:")
-    write("\n A]     itemmod:item  integer")
-    write("\n B]     itemname      integer")
-    write("\n C]     e enchantname integer\n\n > ")
+    write("\n A]     itemmod:item  amount")
+    write("\n B]     itemname      amount")
+    write("\n C]     enchantname   level    amount\nAnything after name is optional\n\n > ")
     local req = string.lower(read()):match("^%s*(.-)%s*$")
-    local itemid, amount, isEnchant = splitItemString( req )
+    local itemid, amount = splitItemString(req)
 
     write("\nYou are requesting:")
-    write("\n Name:    "..itemid)
-    write("\n Amount:  "..amount)
-    write("\n Enchant: "..(isEnchant and "yes" or "no"))
+    write("\n Name:    " .. itemid)
+    write("\n Amount:  " .. amount)
     write("\nYes or No?\n > ")
     local yn = string.lower(read())
 
@@ -120,7 +109,7 @@ while true do
             write("\nAmount entered contains non-integer characters, did you spell it wrong?\n")
         else
             write("\nLooking for your item...")
-            local amountLeft = searchAndOutput(itemid,tonumber(amount), isEnchant)
+            local amountLeft = iterate(itemid, tonumber(amount), isEnchant)
 
             if amountLeft == 0 then
                 write("\nTransferred all items!\n")
