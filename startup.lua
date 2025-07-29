@@ -31,7 +31,7 @@ if not fs.exists("startup.lua") then
     })
     settings.set("branch.setting", branch)
     shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/" ..
-        branch .. "/startup.lua startup.lua")
+        branch .. "/startup.lua")
 end
 
 if not fs.exists("items.json") then
@@ -39,24 +39,28 @@ if not fs.exists("items.json") then
     file.write("{}")
     file.close()
 end
+if not fs.exists("CONSTANTS.lua") then
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/" ..
+        branch .. "/CONSTANTS.lua")
+end
 
 if not fs.exists("input.lua") then
     shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/" ..
-        branch .. "/input.lua input.lua")
+        branch .. "/input.lua")
 end
 
 if not fs.exists("output.lua") then
     shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/" ..
-        branch .. "/output.lua output.lua")
+        branch .. "/output.lua")
 end
 
 if not fs.exists("defragment.lua") then
     shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/" ..
-        branch .. "/defragment.lua defragment.lua")
+        branch .. "/defragment.lua")
 end
 if not fs.exists("redoJson.lua") then
     shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/" ..
-        branch .. "/redoJson.lua redoJson.lua")
+        branch .. "/redoJson.lua")
 end
 
 -- Sanity checking and condensing storage
