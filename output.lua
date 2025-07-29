@@ -32,6 +32,8 @@ local function iterate(itemid, amount, isEnchant)
             end
         end
     end
+
+    return amountLeft
 end
 
 local function splitItemString(input)
