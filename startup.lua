@@ -98,11 +98,11 @@ local yn = string.lower(readWithTimeout(15, ""))
 if string.find(yn, "y") then
     shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/" ..
         branch .. "/startup.lua")
-    shell.delete("CONSTANTS.lua")
-    shell.delete("input.lua")
-    shell.delete("output.lua")
-    shell.delete("defragment.lua")
-    shell.delete("redoJson.lua")
+    fs.delete("CONSTANTS.lua")
+    fs.delete("input.lua")
+    fs.delete("output.lua")
+    fs.delete("defragment.lua")
+    fs.delete("redoJson.lua")
 
     write("\nUpdate complete! Restarting CC-Storage.\n")
 
