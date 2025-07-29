@@ -1,141 +1,67 @@
 local mainChest = "minecraft:barrel_0"
-local inputChest = peripheral.find(mainChest)
 
-local function findEmptyAndAdd(input)
-    local potentials = peripheral.getNames()
-    local name = false
-
-    for _,entry in pairs(potentials) do -- Iterates through
-        if string.find(entry, ":") and not entry:find("barrel") then
-            local store = peripheral.wrap(entry)
-
-            if #store.list() == 0 then
-                --table.insert(names, entry)
-                name = entry
-                break
-            end
-        end
-    end
-    table.insert(input, name)
-    return input
-end
-
-local function splitAtFirstColon(str)
-    local left, right = str:match("^(.-):(.*)$")
-    if left and right then
-        return right
-    else
-        return str
-    end
-end
-
-local function iterate(itemid, originSlot, amount, filter, assignNew)
+local function iterate(itemid, displayname,  originSlot, amount)
     local amountLeft = amount
 
-    local file = fs.open("stores.json", "r")
+    local file = fs.open("items.json", "r")
     local jsonStr = file.readAll()
     file.close()
 
     local data = textutils.unserialiseJSON(jsonStr)
-    local names = false
-    local letter = ( itemid=="minecraft:enchanted_book" and "en" or splitAtFirstColon(itemid):sub(1, 1) )
-    local index = ( string.len(letter) == 1 and string.byte(letter)-string.byte("a")+1 or 27 )
 
-    local entry = data[index]
+    for _,entry in pairs(data) do -- Checks pre-existing data
+        if entry.itemid == itemid or entry.displayname == displayname then
+            local store = peripheral.wrap("sophisticatedbackpacks:backpack_"..tostring(entry.storeid))
+            local item = store.getItemDetail(entry.slot)
 
-    if not assignNew then
-        names = entry.peripherals
-    end
+            if item.count < store.getItemLimit(entry.slot) then
+                local transferred = store.pullItems( mainChest, originSlot, amountLeft, entry.slot )
+                amountLeft = amountLeft - transferred
 
-    if assignNew or not names then
-        names = findEmptyAndAdd(entry.peripherals)
-        data[index].peripherals = names
-
-        file = fs.open("stores.json", "w")
-        file.write(textutils.serialiseJSON(data))
-        file.close()
-    end
-
-    --[[local foundEntry = false
-
-    for i,entry in ipairs(data) do
-        if entry.category == letter then
-            foundEntry = true
-            if not assignNew then
-                names = entry.peripherals
-            elseif assignNew then
-                names = findEmptyAndAdd(entry.peripherals)
-                data[i].peripherals = names
-
-                file = fs.open("stores.json", "w")
-                file.write(textutils.serialiseJSON(data,true))
-                file.close()
-            end
-            break
-        end
-    end
-
-    if not foundEntry then
-        table.insert(data, {category=letter, peripherals=findEmptyAndAdd({})})
-        file = fs.open("stores.json", "w")
-        file.write(textutils.serialiseJSON(data,true))
-        file.close()
-    end]]
-
-    for _,name in pairs(names) do
-        if amountLeft <= 0 then
-            break
-        end
-
-        if amountLeft > 0 and not name:find("barrel") then
-            local store = peripheral.wrap(name)
-            
-            if filter then
-                for slot,item in pairs(store.list()) do
-                    item = store.getItemDetail(slot) -- Hate it but gives more information
-
-                    if item.name == itemid and item.count < store.getItemLimit(slot) then
-                        store.pullItems(mainChest, originSlot, math.min( store.getItemLimit(slot)-item.count, amountLeft ), slot)
-
-                        local originItem = peripheral.wrap("minecraft:barrel_0").getItemDetail(originSlot)
-                        amountLeft = 0
-                        if originItem then amountLeft = originItem.count end
-
-                        if amountLeft <= 0 then
-                            break
-                        end
-                    end
+                if amountLeft <= 0 then
+                    break
                 end
-            elseif #store.list() < store.size() then
-                for slot=1,store.size() do
-                    if not store.getItemDetail(slot) then
-                        store.pullItems(mainChest, originSlot, amountLeft, slot)
+            end
+        end
+    end
 
-                        local originItem = peripheral.wrap("minecraft:barrel_0").getItemDetail(originSlot)
-                        amountLeft = 0
-                        if originItem then amountLeft = originItem.count end
-                        
-                        if amountLeft <= 0 then
-                            break
+    if amountLeft > 0 then
+        local potentials = peripheral.getNames()
+
+        for _,name in pairs(potentials) do
+            if name:find("backpack") then
+                local store = peripheral.wrap(name)
+
+                if #store.list() < store.size() then
+                    for slot=1,store.size() do
+                        local slotData = store.getItemDetail(slot)
+
+                        if not slotData then
+                            local transferred = store.pullItems( mainChest, originSlot, amountLeft, slot )
+                            amountLeft = amountLeft - transferred
+                            
+                            table.insert(data, {itemid=itemid, displayname=displayname, storeid=name:match(".*_(.+)$"), slot=slot})
+
+                            file = fs.open("items.json", "w")
+                            file.write(textutils.serialiseJSON(data))
+                            file.close()
+
+                            if amountLeft <= 0 then
+                                break
+                            end
                         end
                     end
                 end
             end
         end
     end
-    
-
-    --if not names then
-    --    table.insert( data, {category=letter, peripherals=findEmptyAndAdd({})} )
-    --end
-    
 
     return amountLeft
 end
 
 while true do
 
-    local items = peripheral.wrap("minecraft:barrel_0").list()
+    local items = peripheral.wrap(mainChest).list()
 
     if textutils.serialize(items) ~= "{}" then
         for slot,item in pairs(items) do

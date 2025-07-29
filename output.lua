@@ -1,75 +1,33 @@
 local mainChest = "minecraft:barrel_1"
 
-local function splitAtFirstColon(str)
-    local left, right = str:match("^(.-):(.*)$")
-    if left and right then
-        return right
-    else
-        return str
-    end
-end
-
-local function searchAndOutput(itemid, amount, isEnchant)
+local function iterate(itemid, amount, isEnchant)
     local amountLeft = amount
 
-    local file = fs.open("stores.json", "r")
+    local file = fs.open("items.json", "r")
     local jsonStr = file.readAll()
     file.close()
 
     local data = textutils.unserialiseJSON(jsonStr)
-    write(textutils.serialise(data).."\n")
-    sleep(5)
-    write(jsonStr.."\n")
-    sleep(5)
-    local names = false
-    local letter = ( itemid=="minecraft:enchanted_book" and "en" or splitAtFirstColon(itemid):sub(1, 1) )
-    local index = ( string.len(letter) == 1 and string.byte(letter)-string.byte("a")+1 or 27 )
 
-    --local entry = data[index]
-    names = data[index].peripherals
-    write(table.concat(names, "\n"))
-    sleep(5)
+    for index,entry in pairs(data) do
+        if entry.itemid == itemid or entry.displayname == displayname then
+            local store = peripheral.wrap("sophisticatedbackpacks:backpack_"..tostring(entry.storeid))
+            local item = store.getItemDetail(entry.slot)
 
+            if item.count < store.getItemLimit(entry.slot) then
+                local transferred = store.pushItems( mainChest, entry.slot, amountLeft)
+                amountLeft = amountLeft - transferred
+                
+                if transferred == item.count then
+                    table.remove(data, index)
 
-    --[[for i,entry in ipairs(data) do
-        if entry.category == letter then
-            names = entry.peripherals
-            break
-        end
-    end]]
+                    local file = fs.open("items.json", "w")
+                    file.write(textutils.serialiseJSON(data))
+                    file.close()
+                end
 
-    for _,name in pairs(names) do
-        if amount <= 0 then
-            return amountLeft
-        end
-
-        if name:find(":") and amountLeft > 0 and name ~= mainChest then
-            local store = peripheral.wrap(name)
-
-            for slot,item in pairs(store.list()) do
-                item = store.getItemDetail(slot) -- Better item details
-
-                if isEnchant and item.name == "minecraft:enchanted_book" then
-                    local enchantments = item.enchantments
-                    for _,enchant in pairs (enchantments) do
-                        if enchant.name:find(itemid) or string.lower(item.displayName):find(itemid) then
-                            store.pushItems(mainChest, slot, math.min(amountLeft, item.count))
-                            amountLeft = math.max(0, amountLeft-item.count)
-
-                            if amountLeft <= 0 then
-                                return amountLeft
-                            end
-                        end
-                    end
-                else
-                    if item.name:find(itemid) or string.lower(item.displayName):find(itemid) then
-                        store.pushItems(mainChest, slot, amountLeft)
-                        amountLeft = math.max(0, amountLeft-item.count)
-
-                        if amountLeft <= 0 then
-                            return amountLeft
-                        end
-                    end
+                if amountLeft <= 0 then
+                    break
                 end
             end
         end
@@ -120,7 +78,7 @@ while true do
             write("\nAmount entered contains non-integer characters, did you spell it wrong?\n")
         else
             write("\nLooking for your item...")
-            local amountLeft = searchAndOutput(itemid,tonumber(amount), isEnchant)
+            local amountLeft = iterate(itemid,tonumber(amount), isEnchant)
 
             if amountLeft == 0 then
                 write("\nTransferred all items!\n")
