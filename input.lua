@@ -17,7 +17,7 @@ local function addToBackpack(slot, item)
                     data = {}
                 end
                 --table.insert(json, { storage = entry, slot = #store.list(), name = item.name, count = item.count })
-                table.insert(data, { item.name, item.displayName, entry:match(".*_(.+)$"),  #store.list(), item.count})
+                table.insert(data, { item.name, item.displayName, entry:match(".*_(.+)$"), #store.list(), item.count })
                 file = fs.open("items.json", "w")
                 file.write(textutils.serializeJSON(data))
                 file.close()
@@ -37,11 +37,11 @@ while true do
             addToBackpack(slot, inputChest.getItemDetail(slot))
             if inputChest.getItemDetail(slot) ~= nil then
                 write("\nNot enough storage, running defragmentation.\n")
-                os.run({}, "defragment.lua")
+                shell.run("defragment")
                 write("\nDefragmentation is complete!\n\n")
                 defragmented = true
             else
-                write("Added new item " .. item.name .. " (".. item.count .. ") " .. " to backpack.")
+                write("Added new item " .. item.name .. " (" .. item.count .. ") " .. " to backpack.")
                 defragmented = false
             end
         end
@@ -50,7 +50,7 @@ while true do
             sleep(1)
         else
             write("\nDefragmenting storage, please wait.\n")
-            os.run({}, "defragment.lua")
+            shell.run("defragment")
             write("\nDefragmentation is complete!\n\n")
             defragmented = true
         end
