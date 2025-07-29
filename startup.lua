@@ -1,6 +1,6 @@
 
 local function readWithTimeout(timeout)
-    term.write("> ")
+    --term.write("> ")
     local input = ""
     local timer = os.startTimer(timeout)
 
@@ -15,7 +15,7 @@ local function readWithTimeout(timeout)
             return input  -- User pressed Enter
         elseif event == "timer" and p1 == timer then
             print("\n[Timeout]")
-            return nil  -- Timeout occurred
+            return ""  -- Timeout occurred
         end
     end
 end
