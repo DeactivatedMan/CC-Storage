@@ -82,12 +82,12 @@ end
 
 -- Executes main scripts
 if fs.exists("input.lua") then
-    local input = multishell.launch({}, "input.lua")
+    local input = shell.openTab("input")
     multishell.setTitle(input, "")
 end
 
 if fs.exists("output.lua") then
-    local output = multishell.launch({}, "output.lua")
+    local output = shell.openTab("output")
     multishell.setTitle(output, "Output")
     multishell.setFocus(output)
 end
