@@ -44,7 +44,7 @@ while true do
         else
             write("\nDefragmenting storage, please wait.\n")
             os.run({}, "defragment")
-            write("Defragmentation is complete!\n\n")
+            write("\nDefragmentation is complete!\n\n")
             defragmented = true
         end
     end

@@ -26,7 +26,7 @@ end
 if fs.exists("defragment.lua") then
     write("\nDefragmenting storage, please wait.\n")
     os.run({}, "defragment.lua")
-    write("Defragmentation is complete!\n\n")
+    write("\nDefragmentation is complete!\n\n")
 end
 
 if fs.exists("input.lua") then
