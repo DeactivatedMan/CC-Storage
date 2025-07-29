@@ -44,7 +44,7 @@ local function iterate(itemid, displayname, originSlot, amount)
                             local transferred = store.pullItems( mainChest, originSlot, amountLeft, slot )
                             amountLeft = amountLeft - transferred
                             
-                            table.insert(data, {itemid, displayname, name:match(".*_(.+)$"), slot})
+                            table.insert(data, {itemid, displayname, name:match(".*_(.+)$"), slot, transferred})
 
                             local fileW = fs.open("items.json", "w")
                             fileW.write(textutils.serialiseJSON(data))
