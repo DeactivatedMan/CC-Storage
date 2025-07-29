@@ -6,7 +6,7 @@ local json = textutils.unserializeJSON(jsonStr) or {}
 local sameItems = {}
 
 for _, entry in ipairs(json) do
-  local key = entry[1] .. entry[2]
+  local key = entry[INDEXES.id] .. entry[INDEXES.displayName]
   if not sameItems[key] then
     sameItems[key] = {}
   end
@@ -19,16 +19,17 @@ for itemName, entries in pairs(sameItems) do
     write("\nFound multiple entries for item: " .. itemName .. "\n")
     local i = 1
     while i <= #entries do
-      if entries[i][5] < 128 then
+      if entries[i][INDEXES.amount] < 128 then
         for x = #entries, i + 1, -1 do
           local entry1 = entries[i]
           local entry2 = entries[x]
-          local toMove = math.min(128 - entry1[5], entry2[5])
-          entry1[5] = entry1[5] + toMove
-          entry2[5] = entry2[5] - toMove
-          local toChest = peripheral.wrap("sophisticatedbackpacks:backpack_"..tostring(entry1[3]))
-          toChest.pullItems("sophisticatedbackpacks:backpack_"..tostring(entry2[3]), entry2[4], toMove, entry1[4])
-          if entry2[5] <= 0 then
+          local toMove = math.min(128 - entry1[INDEXES.amount], entry2[INDEXES.amount])
+          entry1[INDEXES.amount] = entry1[INDEXES.amount] + toMove
+          entry2[INDEXES.amount] = entry2[INDEXES.amount] - toMove
+          local toChest = peripheral.wrap("sophisticatedbackpacks:backpack_" .. tostring(entry1[INDEXES.storeId]))
+          toChest.pullItems("sophisticatedbackpacks:backpack_" .. tostring(entry2[INDEXES.storeId]), entry2
+          [INDEXES.slot], toMove, entry1[INDEXES.slot])
+          if entry2[INDEXES.amount] <= 0 then
             table.remove(entries, x)
           end
         end
