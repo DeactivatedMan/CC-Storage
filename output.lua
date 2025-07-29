@@ -10,7 +10,7 @@ local function iterate(itemid, amount, isEnchant)
     local data = textutils.unserialiseJSON(jsonStr)
 
     for index,entry in pairs(data) do
-        if entry.itemid:find(itemid) or string.lower(entry.displayname):find(displayname) then
+        if entry.itemid:find(itemid) or string.lower(entry.displayname):find(itemid) then
             local store = peripheral.wrap("sophisticatedbackpacks:backpack_"..tostring(entry.storeid))
             local item = store.getItemDetail(entry.slot)
 
