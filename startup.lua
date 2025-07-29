@@ -1,4 +1,3 @@
-
 local function readWithTimeout(timeout)
     --term.write("> ")
     local input = ""
@@ -20,11 +19,17 @@ local function readWithTimeout(timeout)
     end
 end
 
+local branch = "main"
+
 -- Checks if first install and downloads files
+if not fs.exists("startup.lua") then
+
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/test/startup.lua startup.lua")
+end
+
 if not fs.exists("items.json") then
-    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/test/items.json items.json")
     local file = fs.open("items.json", "w")
-    file.write(textutils.serialiseJSON({}))
+    file.write("{}")
     file.close()
 end
 
@@ -41,22 +46,6 @@ if not fs.exists("defragment.lua") then
 end
 if not fs.exists("redoJson.lua") then
     shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/test/redoJson.lua redoJson.lua")
-end
-
--- Replaces old files with newly downloaded
-if fs.exists("inputB.lua") then
-    shell.run("delete input.lua")
-    shell.run("rename inputB.lua input.lua")
-end
-
-if fs.exists("outputB.lua") then
-    shell.run("delete output.lua")
-    shell.run("rename outputB.lua output.lua")
-end
-
-if fs.exists("defragmentB.lua") then
-    shell.run("delete defragment.lua")
-    shell.run("rename defragmentB.lua defragment.lua")
 end
 
 -- Sanity checking and condensing storage
@@ -93,8 +82,8 @@ write("Attempt update? Y // N\n > ")
 local yn = string.lower(readWithTimeout(15))
 
 if string.find(yn, "y") then
-    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/test/input.lua inputB.lua")  -- Downloads input script
-    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/test/output.lua outputB.lua") -- Downloads output script
-    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/test/defragment.lua defragmentB.lua") -- Downloads defrag script
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/test/input.lua")  -- Downloads input script
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/test/output.lua") -- Downloads output script
+    shell.run("wget https://raw.githubusercontent.com/DeactivatedMan/CC-Storage/refs/heads/test/defragment.lua") -- Downloads defrag script
     write("Updated! (Or did absolutely nothing other than reset the files..)\nrun 'reboot' to initialise\n")
 end
